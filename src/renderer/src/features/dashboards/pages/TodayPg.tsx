@@ -1,3 +1,9 @@
+import { Header } from '../components/Header'
 export const TodayPg = () => {
-  return <div>Today Page</div>
+  return (
+    <div>
+      <Header />
+     
+    </div>
+  )
 }
