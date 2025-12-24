@@ -1,0 +1,64 @@
+###############################################
+# Git ignore for Electron + Vite + TypeScript #
+###############################################
+
+# Node modules
+node_modules/
+
+# Build output (Vite / electron-vite / electron-builder)
+dist/
+dist-*/
+dist-electron/
+out/
+release/
+coverage/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Caches
+.eslintcache
+.cache/
+.tmp/
+.parcel-cache/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Electron packaging artifacts
+*.dmg
+*.exe
+*.msi
+*.AppImage
+*.snap
+*.deb
+*.rpm
+*.pkg
+*.7z
+*.zip
+*.tar.gz
+*.asar
+*.app
+
+# Electron auto-updater config (often contains tokens)
+dev-app-update.yml
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Icon?
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
