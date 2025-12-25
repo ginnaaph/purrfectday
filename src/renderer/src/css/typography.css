@@ -8,25 +8,24 @@
   h1 {
     font-family: 'Comic Relief', sans-serif;
     color: #4a3737;
-    font-size: 2.25rem;
+    font-size: 30px;
     font-weight: 900;
     
   }
   h2 {
     font-family: 'Comic Relief', sans-serif;
-    color: #4a3737;
-    font-size: 1.875rem;
+    color: #af95ae;
+    font-size: 24px;
     font-weight: 900;
+
   }
   h3 {
     font-family: 'Comic Relief', sans-serif;   
     color: #4a3737;
-    font-size: 1.5rem;
-    font-weight: 900;
+    font-size: 18px;
+    font-weight: 800 ;
   }
 }
-
-
 
 
 .lexend {
@@ -61,4 +60,13 @@
     font-family: 'Comic Relief', sans-serif;
     color: #4a3737;
     font-weight: 900;
+    font-size: 30px;
+    
+}
+.text-subheading {
+    font-family: 'Comic Relief', sans-serif;
+    color: #af95ae;
+    font-weight: 850;
+    font-size: 20px;
+
 }
