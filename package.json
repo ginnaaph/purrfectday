@@ -32,6 +32,7 @@
     "date-fns": "^4.1.0",
     "electron-updater": "^6.6.2",
     "immer": "^11.1.0",
+    "react-router": "^7.11.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "zustand": "^5.0.9"

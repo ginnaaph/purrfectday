@@ -1,0 +1,64 @@
+
+@layer base {
+  body {
+    font-family: 'Lexend', sans-serif;
+    color: #6a5555;
+
+  }
+  h1 {
+    font-family: 'Comic Relief', sans-serif;
+    color: #4a3737;
+    font-size: 2.25rem;
+    font-weight: 900;
+    
+  }
+  h2 {
+    font-family: 'Comic Relief', sans-serif;
+    color: #4a3737;
+    font-size: 1.875rem;
+    font-weight: 900;
+  }
+  h3 {
+    font-family: 'Comic Relief', sans-serif;   
+    color: #4a3737;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+}
+
+
+
+
+.lexend {
+  font-family: 'Lexend', system-ui;
+  font-weight: var(--weight);
+  font-style: normal;
+}
+.lexend-bold {
+  --weight: 700;
+}
+.lexend-semi-bold {
+  --weight: 600;
+}
+.lexend-medium {
+  --weight: 500;
+}
+.lexend-regular {
+  --weight: 400;
+}
+.lexend-light {
+  --weight: 300;
+}
+.lexend-extra-light {
+  --weight: 200;
+}
+
+.text-body {
+    font-family: 'Lexend', sans-serif;
+    color: #6a5555;
+}
+.text-heading {
+    font-family: 'Comic Relief', sans-serif;
+    color: #4a3737;
+    font-weight: 900;
+}

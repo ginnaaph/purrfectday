@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+}
+
+body {
+  min-height: 100vh;
+  color: #6a5555;
+  background: var(--color-background);
+  line-height: 1.6;
+  font-family:
+    'Lexend',
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
