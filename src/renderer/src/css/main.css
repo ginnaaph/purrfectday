@@ -14,4 +14,24 @@
   --font-weight-black: 900;
   --font-semibold: 600;
 
+/* Colors */
+  --color-background: #f9f8f4;
+  --color-primary: #af95ae;
+  --color-secondary: #cb93ae;
+  --color-accent:#bac5a5;
+  --color-primary-background: #fffaf6;
+  --color-secondary-background: #e2dbe2;
+  --color-cool-accent: #b9d6ec;
+  --color-text-secondary: #7d8f9d;
+  --color-borders: #dcdcda;
+  --color-warm-neutral: #f4e6e6;
+  --color-success: #a8c4a8;
+  --color-warning: #ece5a1;
+  --color-error: #cb7c8e;
+
+
+
+  --color-text: #6a5555;
+
+
 }

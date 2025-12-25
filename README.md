@@ -1,34 +1,4 @@
-# purrfectday
+Purrfectday is a cozy desktop app designed to support focus, planning, and reflection throughout the day.
 
-An Electron application with React and TypeScript
+This project is built as a learning-focused rebuild using Electron, React, TypeScript, and modern frontend architecture.
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-## Project Setup
-
-### Install
-
-```bash
-$ npm install
-```
-
-### Development
-
-```bash
-$ npm run dev
-```
-
-### Build
-
-```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
-```
