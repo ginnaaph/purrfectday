@@ -6,9 +6,9 @@ export const Header = () => {
   const formattedDate = getFormattedDate()
 
   return (
-    <header>
+  <div>
       <h1 className="text-heading">{greeting}</h1>
       <p className="text-subheading">{formattedDate}</p>
-    </header>
+  </div>
   )
 }
