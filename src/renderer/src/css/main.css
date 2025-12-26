@@ -87,13 +87,24 @@
   --color-border: var(--sidebar-border);
   --color-ring: var(--sidebar-ring);
 
-
   --color-foreground: #6a5555;
 }
 
 @layer base {
   * {
     @apply border outline-gray-300/50;
+
+  }
+  body {
+    @apply bg-background text-foreground;
+
+  }
+
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
 
   }
   body {
