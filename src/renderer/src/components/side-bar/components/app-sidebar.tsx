@@ -3,9 +3,14 @@ import {
   SidebarContent,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  SidebarHeader,
+  SidebarGroup,
+  SidebarProvider
 } from './ui/sidebar'
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
+import { UserCard } from '@/components/userCard'
+
 
 // menu items
 const items = [
@@ -36,23 +41,31 @@ const items = [
   }
 ]
 
-export function AppSidebar() {
+export const AppSidebar = () => {
   return (
-    <Sidebar >
-      <SidebarContent className="gap-2 p-1 text-primary mt-5">
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url} >
-                  <item.icon />
-                  <span className="text-primary text-lg font-semibold">{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+    
+    <Sidebar side="left" collapsible="icon">
+      <SidebarHeader>
+        <UserCard />
+      </SidebarHeader>
+
+      <SidebarContent className="text-primary mt-2">
+        <SidebarGroup>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild tooltip={item.title}>
+                  <a href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
+   
   )
 }

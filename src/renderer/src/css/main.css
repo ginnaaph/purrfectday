@@ -16,13 +16,13 @@
   --font-weight-black: 900;
   --font-semibold: 600;
 
-/* Colors */
+  /* Colors */
   --color-background: #f9f8f4;
   --color-primary: #6a5555;
   --color-primary-alt: #af95ae;
   --color-secondary: #cb93ae;
   --color-secondary-alt: #eca999;
-  --color-accent:#bac5a5;
+  --color-accent: #bac5a5;
   --color-primary-background: #fffaf6;
   --color-secondary-background: #e2dbe2;
   --color-cool-accent: #b9d6ec;
@@ -38,78 +38,60 @@
   --color-foreground: var(--color-text);
   --color-border: #dcdcda;
   --color-ring: #b9d6ec;
-
 }
+@layer base {
+  :root {
+    /* Sidebar surface + text */
+    --sidebar: #e2dbe2; /* lavender surface */
+    --sidebar-foreground: #6a5555; /* warm brown text */
 
-:root {
-  /* Sidebar surface + text */
-  --sidebar: #e2dbe2; /* lavender surface */
-  --sidebar-foreground: #6a5555; /* warm brown text */
+    /* Primary action inside sidebar (active item, primary button) */
+    --sidebar-primary: #6a5555; /* warm brown */
+    --sidebar-primary-foreground: #fffaf6; /* creamy white */
 
-  /* Primary action inside sidebar (active item, primary button) */
-  --sidebar-primary: #6a5555; /* warm brown */
-  --sidebar-primary-foreground: #fffaf6; /* creamy white */
+    /* Accent backgrounds (hover, subtle highlights) */
+    --sidebar-accent: #f4e0e1; /* soft blush */
+    --sidebar-accent-foreground: #6a5555; /* warm brown */
 
-  /* Accent backgrounds (hover, subtle highlights) */
-  --sidebar-accent: #f4e0e1; /* soft blush */
-  --sidebar-accent-foreground: #6a5555; /* warm brown */
+    /* Borders + focus ring */
+    --sidebar-border: #e2dbe2; /* soft border gray */
+    --sidebar-ring: #b9d6ec; /* calm blue ring */
+  }
 
-  /* Borders + focus ring */
-  --sidebar-border: #dcdcda; /* soft border gray */
-  --sidebar-ring: #b9d6ec; /* calm blue ring */
-}
+  .dark {
+    /* Dark mode: keep it cozy, not harsh-black */
+    --sidebar: #2a2a2f; /* soft charcoal */
+    --sidebar-foreground: #fffaf6; /* creamy text */
 
-.dark {
-  /* Dark mode: keep it cozy, not harsh-black */
-  --sidebar: #2a2a2f; /* soft charcoal */
-  --sidebar-foreground: #fffaf6; /* creamy text */
+    --sidebar-primary: #af95ae; /* muted lavender */
+    --sidebar-primary-foreground: #ffffff;
 
-  --sidebar-primary: #af95ae; /* muted lavender */
-  --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #3a3338; /* warm dark accent */
+    --sidebar-accent-foreground: #fffaf6;
 
-  --sidebar-accent: #3a3338; /* warm dark accent */
-  --sidebar-accent-foreground: #fffaf6;
+    --sidebar-border: #af95ae; /* muted border */
+    --sidebar-ring: #adbcec; /* soft blue focus */
+  }
 
-  --sidebar-border: #4a444c; /* muted border */
-  --sidebar-ring: #adbcec; /* soft blue focus */
-}
+  @theme inline {
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
 
-@theme inline {
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+    --color-border: var(--sidebar-border);
+    --color-ring: var(--sidebar-ring);
 
-  --color-border: var(--sidebar-border);
-  --color-ring: var(--sidebar-ring);
-
-  --color-foreground: #6a5555;
+    --color-foreground: #6a5555;
+  }
 }
 
 @layer base {
-  * {
-    @apply border outline-gray-300/50;
-
-  }
-  body {
-    @apply bg-background text-foreground;
-
-  }
-
 }
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-
-  }
-  body {
-    @apply bg-background text-foreground;
-
-  }
-
+body {
+  @apply bg-background text-foreground;
 }

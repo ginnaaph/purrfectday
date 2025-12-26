@@ -8,10 +8,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AppShell />
+        <AppShell>
         <Routes>
-          <Route index element={<TodayPg />} />
+          <Route path="/" element={<TodayPg />} />
         </Routes>
+        </AppShell>
       </BrowserRouter>
     </QueryClientProvider>
   )
