@@ -5,12 +5,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
-  SidebarGroup,
-  SidebarProvider
+  SidebarGroup
 } from './ui/sidebar'
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
 import { UserCard } from '@/components/userCard'
-
 
 // menu items
 const items = [
@@ -43,13 +41,12 @@ const items = [
 
 export const AppSidebar = () => {
   return (
-    
     <Sidebar side="left" collapsible="icon">
       <SidebarHeader>
         <UserCard />
       </SidebarHeader>
 
-      <SidebarContent className="text-primary mt-2">
+      <SidebarContent className="text-primary mt-2 ">
         <SidebarGroup>
           <SidebarMenu>
             {items.map((item) => (
@@ -57,7 +54,7 @@ export const AppSidebar = () => {
                 <SidebarMenuButton asChild tooltip={item.title}>
                   <a href={item.url}>
                     <item.icon />
-                    <span>{item.title}</span>
+                    <span className="text-lg font-semibold">{item.title}</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -66,6 +63,5 @@ export const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-   
   )
 }
