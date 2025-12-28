@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { getFormattedDate, getFormattedDateFromDate } from '../dates/getFormattedDate'
+import { getFormattedDate, getFormattedDateFromDate } from '../dates-time/getFormattedDate'
 
 // Helper: build a local Date without timezone ambiguity
 const d = (y: number, m: number, day: number) => new Date(y, m, day)

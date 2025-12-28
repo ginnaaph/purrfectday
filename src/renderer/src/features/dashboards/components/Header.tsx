@@ -1,5 +1,5 @@
 import { getGreeting } from '@/utils/getGreeting'
-import { getFormattedDate } from '@/utils/dates/getFormattedDate'
+import { getFormattedDate } from '@/utils/dates-time/getFormattedDate'
 
 export const Header = () => {
   const greeting = getGreeting()
@@ -7,8 +7,8 @@ export const Header = () => {
 
   return (
     <div>
-      <div className="text-heading p-3">
-        {greeting}
+      <div className="p-3">
+        <h1 className="text-heading">{greeting}</h1>
         <p className="text-subheading">{formattedDate}</p>
       </div>
     </div>
