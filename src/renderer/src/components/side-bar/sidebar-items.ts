@@ -17,7 +17,7 @@ interface SidebarItem {
 export const items: SidebarItem[] = [
   {
     title: 'Today',
-    url: '/today',
+    url: '/',
     icon: Home
   },
   {
@@ -43,6 +43,11 @@ export const ProductivityItems: SidebarItem[] = [
     title: 'Pomodoro',
     url: '/pomodoro',
     icon: Tomato
+  },
+    {
+    title: 'Goals',
+    url: '/goals',
+    icon: Goals
   }
 ]
 
@@ -52,9 +57,5 @@ export const RechargeItems: SidebarItem[] = [
     url: '/journal',
     icon: FountainPen
   },
-  {
-    title: 'Goals',
-    url: '/goals',
-    icon: Goals
-  }
+
 ]
