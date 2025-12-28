@@ -7,43 +7,20 @@ import {
   SidebarHeader,
   SidebarGroup
 } from './ui/sidebar'
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
-import { UserCard } from '@/components/userCard'
 
-// menu items
-const items = [
-  {
-    title: 'Today',
-    url: '/today',
-    icon: Home
-  },
-  {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings
-  }
-]
+import { UserCard } from '@/components/userCard'
+import { items } from '../sidebar-items'
+import { NavLink } from 'react-router'
 
 export const AppSidebar = () => {
   return (
     <Sidebar side="left" collapsible="icon">
       <SidebarHeader>
-        <UserCard />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <UserCard />
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent className="text-primary mt-2 ">
@@ -52,10 +29,13 @@ export const AppSidebar = () => {
             {items.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild tooltip={item.title}>
-                  <a href={item.url}>
-                    <item.icon />
+                  <NavLink
+                    to={item.url}
+                    className={({ isActive }) => (isActive ? 'font-semibold' : undefined)}
+                  >
+                    <img src={item.icon} alt="" className="h-5 w-5" />
                     <span className="text-lg font-semibold">{item.title}</span>
-                  </a>
+                  </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

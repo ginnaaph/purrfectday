@@ -7,8 +7,10 @@ export const Header = () => {
 
   return (
     <div>
-      <div className="text-heading">{greeting}</div>
-      <p className="text-subheading">{formattedDate}</p>
+      <div className="text-heading p-3">
+        {greeting}
+        <p className="text-subheading">{formattedDate}</p>
+      </div>
     </div>
   )
 }
