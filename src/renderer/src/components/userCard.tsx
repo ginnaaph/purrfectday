@@ -12,7 +12,7 @@ export const UserCard = () => {
   return (
     <Item className="w-full">
       <ItemMedia>
-        <img src={CatHead} alt="Cat Head" className="h-20 w-20 rounded-full" />
+        <img src={CatHead} alt="Cat Head" className="h-15 w-15 rounded-full" />
       </ItemMedia>
 
       <ItemContent>

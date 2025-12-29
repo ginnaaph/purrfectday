@@ -78,9 +78,9 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
   const isOverdue = Boolean(taskDate && taskDate < today && !isDueToday && !task.isComplete)
 
   return (
-    <li className="flex items-center w-full gap-1 overflow-hidden bg-lightbeige/30 px-2 py-1 rounded-xl shadow-sm hover:shadow-sm transition-shadow mb-3">
-      <div className="flex flex-col w-full ml-1">
-        <div className="flex items-start p-2 w-full gap-3">
+    <li className="flex items-center w-full gap-1 overflow-hidden px-2 py-1 rounded-xl shadow-sm hover:shadow-sm transition-shadow mb-3">
+      <div className="flex flex-col w-full">
+        <div className="flex items-start p-2 w-full gap-2 shrink-0">
           <Checkbox
             checked={task.isComplete}
             disabled={toggleCompleteMutation.isPending}
@@ -91,7 +91,7 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
             aria-label={`Mark ${task.title} complete`}
           />
 
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col">
             <button
               type="button"
               onClick={(e) => {
@@ -114,10 +114,10 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
         </div>
       </div>
 
-      <div className="mr-1 flex items-center gap-2">
+      <div className="mr-2 flex items-center gap-1 shrink-0">
         {task.priority && (
           <span
-            className={`mt-1 text-xs px-3 py-[2px] rounded-full w-fit ${
+            className={`mt-1 mr-4 text-xs px-3 py-0.5 rounded-full w-fit ${
               task.priority === 'high'
                 ? 'bg-[#f5d7d7] text-red-2'
                 : task.priority === 'medium'
@@ -130,24 +130,24 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
         )}
 
         <button
-          className="hover:bg-[#f5e8da] py-2 text-[#6a5555] text-md"
+          className="inline-flex items-center justify-center p-1 rounded-md hover:bg-[#f5e8da] text-[#6a5555] text-sm"
           aria-label="focus on task"
           onClick={() => {
             setFocusedTaskId(task.id)
             navigate('/pomodoro', { state: { focusFromTaskList: true } })
           }}
         >
-          <img src={Tomato} alt="Focus" className="h-4 w-4" />
+          <img src={Tomato} alt="Focus" className="h-5 w-5" />
         </button>
 
         <button
           onClick={() => deleteMutation.mutate(task.id)}
-          className="text-[#6a5555] text-md ml-2"
+          className="inline-flex items-center justify-center p-1 rounded-md hover:bg-[#f5e8da] text-[#6a5555] text-sm"
           data-testid="delete-button"
           aria-label="delete task"
           disabled={deleteMutation.isPending}
         >
-          <img src={Trash} alt="Delete" className="h-4 w-4" />
+          <img src={Trash} alt="Delete" className="h-5 w-5" />
         </button>
       </div>
     </li>

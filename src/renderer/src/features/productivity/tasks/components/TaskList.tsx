@@ -1,7 +1,8 @@
-import { useState , useMemo} from "react";
-import { TaskItem } from "./TaskItem";
-import type { Task } from "../types";
+import { useState, useMemo } from 'react'
+import { TaskItem } from './TaskItem'
+import type { Task } from '../types'
 import sleepingcat from '@/assets/images/cat/sleep.png'
+import { Card, CardContent, CardHeader } from '@/components/card/ui/card'
 
 type TaskListProps = {
   tasks: Task[]
@@ -26,7 +27,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   // If there are NO incomplete tasks, show empty state (even if completed exists)
   if (incomplete.length === 0) {
     return (
-      <div className="text-center py-16 text-[#6a5555] flex flex-col items-center justify-center">
+      <Card>
         <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />
         <p className="text-lg font-semibold">You are all caught up! 🐾</p>
 
@@ -46,36 +47,39 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
             ))}
           </div>
         )}
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className="py-2">
-      <ul className="space-y-2 ml-1">
-        {incomplete.map((task) => (
-          <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
-        ))}
-      </ul>
+    <Card>
+      <CardHeader className="text-heading">Tasks</CardHeader>
+      <CardContent>
+        <ul className="space-y-1 not-visited:ml-1">
+          {incomplete.map((task) => (
+            <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
+          ))}
+        </ul>
 
-      {completed.length > 0 && (
-        <div className="pt-8 mt-2 py-5 ml-2">
-          <button
-            onClick={() => setShowCompleted((prev) => !prev)}
-            className="text-md text-[#6a5555] font-semibold underline mb-1"
-          >
-            {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
-          </button>
+        {completed.length > 0 && (
+          <div className="pt-8 mt-2 py-5 ml-2">
+            <button
+              onClick={() => setShowCompleted((prev) => !prev)}
+              className="text-md text-[#6a5555] font-semibold underline mb-1"
+            >
+              {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
+            </button>
 
-          {showCompleted && (
-            <div className="space-y-2 ml-1 overflow-y-auto">
-              {completed.map((task) => (
-                <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            {showCompleted && (
+              <div className="space-y-2 ml-1 overflow-y-auto">
+                {completed.map((task) => (
+                  <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
