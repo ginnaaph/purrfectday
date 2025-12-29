@@ -16,7 +16,7 @@ export const UserCard = () => {
       </ItemMedia>
 
       <ItemContent>
-        <ItemTitle className="text-xl font-semibold">Gina Pham</ItemTitle>
+        <ItemTitle className="text-xl font-semibold">Gi Gi</ItemTitle>
         <ItemActions>
           <Button variant="outline" size="sm" className="mt-2">
             View Profile

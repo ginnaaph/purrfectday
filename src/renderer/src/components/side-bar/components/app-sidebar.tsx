@@ -61,7 +61,7 @@ export const AppSidebar = () => {
                     >
                       <div className="ml-6 pl-4 flex items-center gap-2">
                         <img src={item.icon} alt="" className="h-5 w-5" />
-                        <span className="text-lg font-semibold">{item.title}</span>
+                        <span className="text-md font-semibold">{item.title}</span>
                       </div>
                     </NavLink>
                   </SidebarMenuButton>
