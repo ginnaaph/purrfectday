@@ -7,6 +7,11 @@ vi.mock('../TaskItem', () => ({
   TaskItem: ({ task }: any) => <div data-testid={`task-item-${task.id}`}>{task.title}</div>
 }))
 
+// Stub TaskDetails to avoid React Query usage inside the list
+vi.mock('../TaskDetails', () => ({
+  TaskDetails: () => null
+}))
+
 const makeTask = (id: number, overrides: Partial<any> = {}) => ({
   id,
   title: `Task ${id}`,

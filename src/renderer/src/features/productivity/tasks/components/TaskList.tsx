@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react'
 import { TaskItem } from './TaskItem'
+import { TaskDetails } from './TaskDetails'
+import { useTaskModalStore } from '../store/useTaskModalStore'
 import type { Task } from '../types'
 import sleepingcat from '@/assets/images/cat/sleep.png'
 import { Card, CardContent, CardHeader } from '@/components/card/ui/card'
@@ -11,6 +13,7 @@ type TaskListProps = {
 
 export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   const [showCompleted, setShowCompleted] = useState(false)
+  const selectedTaskId = useTaskModalStore((s) => s.selectedTaskId)
 
   const { incomplete, completed } = useMemo(() => {
     const completed: Task[] = []
@@ -55,7 +58,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
     <Card>
       <CardHeader className="text-heading">Tasks</CardHeader>
       <CardContent>
-        <ul className="space-y-1 not-visited:ml-1">
+        <ul className="space-y-3 not-visited:ml-1">
           {incomplete.map((task) => (
             <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
           ))}
@@ -71,7 +74,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
             </button>
 
             {showCompleted && (
-              <div className="space-y-2 ml-1 overflow-y-auto">
+              <div className="space-y-3 ml-1 overflow-y-auto">
                 {completed.map((task) => (
                   <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
                 ))}
@@ -79,6 +82,9 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
             )}
           </div>
         )}
+
+        {/* Mount the task details dialog once for this list */}
+        <TaskDetails taskId={selectedTaskId} />
       </CardContent>
     </Card>
   )

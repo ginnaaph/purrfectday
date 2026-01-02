@@ -38,7 +38,8 @@ vi.mock('react-router-dom', async (orig) => {
   return { ...actual, useNavigate: () => navigate, __mocks: { navigate } }
 })
 
-vi.mock('../api/updateTaskProgress', () => ({
+// Mock with a specifier that resolves to the same module path used in assertions
+vi.mock('../../api/updateTaskProgress', () => ({
   updateTaskProgress: vi.fn(async () => ({ error: null }))
 }))
 
@@ -62,6 +63,7 @@ const renderWithProviders = (ui: React.ReactElement) => {
 describe('TaskItem', () => {
   beforeEach(() => {
     queryClient.clear()
+    vi.clearAllMocks()
   })
 
   it('renders title and priority pill', () => {

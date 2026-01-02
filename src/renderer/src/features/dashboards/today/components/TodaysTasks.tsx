@@ -7,14 +7,7 @@ import { Skeleton } from '@/components/side-bar/components/ui/skeleton'
 import { Checkbox } from '@/components/checkbox/ui/checkbox'
 import { Button } from '@/components/side-bar/components/ui/button'
 import { AddTask } from '@/features/productivity/tasks/components/AddTask'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/dialog/ui/dialog'
+import { Dialog, DialogTrigger, DialogContent } from '@/components/dialog/ui/dialog'
 
 type TodaysTask = {
   id: number
@@ -23,6 +16,7 @@ type TodaysTask = {
   completedAt?: Date | null
   earnedCoins?: number
   priority?: 'low' | 'medium' | 'high' | null
+  dueDate?: Date | null
 }
 
 type TodaysTaskCardProps = {
@@ -32,6 +26,7 @@ type TodaysTaskCardProps = {
     isComplete: boolean
     completedAt?: Date | null
     priority?: 'low' | 'medium' | 'high' | null
+    dueDate?: Date | null
   }[]
   onCoinsEarned?: (amount: number) => void
   coinsPerTask?: number
@@ -98,7 +93,7 @@ export const TodaysTaskCard = ({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="space-y-2">
+          <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center gap-3 bg-lightbeige p-2 rounded-lg">
                 <Skeleton className="h-4 w-4 rounded" />
@@ -110,13 +105,24 @@ export const TodaysTaskCard = ({
           <p className="text-muted-foreground">No tasks for today!</p>
         ) : (
           <div className="space-y-6">
-            {tasks.filter((t) => t.priority === 'high' && !t.isComplete).length > 0 && (
-              <section aria-label="High Priority Tasks">
-                <div className="text-lg font-semibold  mb-2">High Priority</div>
-                <ul className="space-y-2">
-                  {tasks
-                    .filter((t) => t.priority === 'high' && !t.isComplete)
-                    .map((task) => (
+            {(() => {
+              // Helper to check if a task is due today (ignores time)
+              const isToday = (d?: Date | null) => {
+                if (!d) return false
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
+                const dd = new Date(d)
+                dd.setHours(0, 0, 0, 0)
+                return dd.getTime() === today.getTime()
+              }
+
+              const highToday = tasks.filter((t) => t.priority === 'high' && isToday(t.dueDate))
+
+              return highToday.length > 0 ? (
+                <section aria-label="High Priority Tasks">
+                  <div className="text-xl font-semibold mb-2">High Priority (Today)</div>
+                  <ul className="space-y-4">
+                    {highToday.map((task) => (
                       <li
                         key={task.id}
                         className="flex items-center gap-3 bg-[#f5d7d7] p-2 rounded-lg"
@@ -138,32 +144,51 @@ export const TodaysTaskCard = ({
                         </span>
                       </li>
                     ))}
-                </ul>
-              </section>
-            )}
+                  </ul>
+                </section>
+              ) : null
+            })()}
 
             <section aria-label="Other Tasks">
-              <ul className="space-y-2">
-                {tasks
-                  .filter((t) => !(t.priority === 'high' && !t.isComplete))
-                  .map((task) => (
-                    <li
-                      key={task.id}
-                      className="flex items-center gap-3 bg-lightbeige p-2 rounded-lg"
-                    >
-                      <Checkbox
-                        checked={task.isComplete}
-                        disabled={toggleCompleteMutation.isPending}
-                        onCheckedChange={(checked) =>
-                          toggleCompleteMutation.mutate({ task, nextChecked: checked === true })
-                        }
-                        aria-label={`Mark ${task.title} complete`}
-                      />
-                      <span className={task.isComplete ? 'line-through text-muted-foreground' : ''}>
-                        {task.title}
-                      </span>
-                    </li>
-                  ))}
+              <div className="text-xl font-semibold mb-2">To do</div>
+              <ul className="space-y-4">
+                {(() => {
+                  const isToday = (d?: Date | null) => {
+                    if (!d) return false
+                    const today = new Date()
+                    today.setHours(0, 0, 0, 0)
+                    const dd = new Date(d)
+                    dd.setHours(0, 0, 0, 0)
+                    return dd.getTime() === today.getTime()
+                  }
+                  const highTodayIds = new Set(
+                    tasks
+                      .filter((t) => t.priority === 'high' && isToday(t.dueDate))
+                      .map((t) => t.id)
+                  )
+                  return tasks
+                    .filter((t) => !highTodayIds.has(t.id))
+                    .map((task) => (
+                      <li
+                        key={task.id}
+                        className="flex items-center gap-3 p-2 rounded-lg"
+                      >
+                        <Checkbox
+                          checked={task.isComplete}
+                          disabled={toggleCompleteMutation.isPending}
+                          onCheckedChange={(checked) =>
+                            toggleCompleteMutation.mutate({ task, nextChecked: checked === true })
+                          }
+                          aria-label={`Mark ${task.title} complete`}
+                        />
+                        <span
+                          className={task.isComplete ? 'line-through text-muted-foreground' : ''}
+                        >
+                          {task.title}
+                        </span>
+                      </li>
+                    ))
+                })()}
               </ul>
             </section>
           </div>

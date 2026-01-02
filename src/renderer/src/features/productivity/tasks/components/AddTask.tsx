@@ -9,7 +9,7 @@ import { Card, CardHeader, CardContent } from '@/components/card/ui/card'
 
 import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/side-bar/components/ui/input'
-import {Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
