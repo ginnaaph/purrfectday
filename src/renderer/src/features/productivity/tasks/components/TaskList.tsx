@@ -56,9 +56,9 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
 
   return (
     <Card>
-      <CardHeader className="text-heading">Tasks</CardHeader>
+      <CardHeader className="text-heading mb-0">Tasks</CardHeader>
       <CardContent>
-        <ul className="space-y-3 not-visited:ml-1">
+        <ul className="space-y-3 not-visited:ml-1 mt-0">
           {incomplete.map((task) => (
             <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
           ))}

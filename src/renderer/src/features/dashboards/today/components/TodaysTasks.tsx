@@ -169,10 +169,7 @@ export const TodaysTaskCard = ({
                   return tasks
                     .filter((t) => !highTodayIds.has(t.id))
                     .map((task) => (
-                      <li
-                        key={task.id}
-                        className="flex items-center gap-3 p-2 rounded-lg"
-                      >
+                      <li key={task.id} className="flex items-center gap-3 p-2 rounded-lg">
                         <Checkbox
                           checked={task.isComplete}
                           disabled={toggleCompleteMutation.isPending}

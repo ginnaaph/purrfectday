@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,6 +8,10 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/text-area/ui/textArea'
 import { Button } from '@/components/ui/button'
 import { useTaskModalStore } from '../store/useTaskModalStore'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+import { Label } from '@/components/label/ui/label'
+import { ChevronDownIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -22,7 +26,8 @@ const schema = z.object({
   priority: z.enum(['low', 'medium', 'high']).optional(),
   tags: z.string().optional(),
   estimatedPomodoros: z.number().nullable().optional(),
-  dueDate: z.string().optional()
+  dueDate: z.string().optional(),
+  dueTime: z.string().optional()
 })
 type TaskDetailsFormInput = z.infer<typeof schema>
 
@@ -31,6 +36,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   const selectedTaskId = useTaskModalStore((s) => s.selectedTaskId)
   const close = useTaskModalStore((s) => s.close)
   const { task, updateTaskMutation } = useTaskDetailData(taskId)
+  const [dateOpen, setDateOpen] = useState(false)
 
   const form = useForm<TaskDetailsFormInput>({
     resolver: zodResolver(schema),
@@ -55,10 +61,32 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
         typeof task.estimatedPomodoros === 'number' ? task.estimatedPomodoros : null,
       dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : ''
     })
+    if (task.dueDate) {
+      const d = new Date(task.dueDate)
+      const hh = String(d.getHours()).padStart(2, '0')
+      const mm = String(d.getMinutes()).padStart(2, '0')
+      const ss = String(d.getSeconds()).padStart(2, '0')
+      form.setValue('dueTime', `${hh}:${mm}:${ss}`)
+    } else {
+      form.setValue('dueTime', '')
+    }
   }, [task, form])
 
   function onSubmit(values: TaskDetailsFormInput) {
     if (!selectedTaskId) return
+
+    // Combine local date + time into a Date
+    let combinedDue: Date | null = null
+    if (values.dueDate) {
+      const d = new Date(values.dueDate)
+      if (values.dueTime) {
+        const [h, m = '0', s = '0'] = values.dueTime.split(':')
+        d.setHours(Number(h || 0), Number(m || 0), Number(s || 0), 0)
+      } else {
+        d.setHours(0, 0, 0, 0)
+      }
+      combinedDue = d
+    }
 
     const updates = {
       title: values.title,
@@ -67,7 +95,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
       tags: values.tags ?? '',
       estimated_pomodoros:
         typeof values.estimatedPomodoros === 'number' ? values.estimatedPomodoros : null,
-      dueDate: values.dueDate ? new Date(values.dueDate) : null
+      dueDate: combinedDue
     }
 
     updateTaskMutation.mutate(
@@ -81,6 +109,8 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   }
 
   const open = isOpen && !!selectedTaskId && selectedTaskId === taskId
+  const dueDateStr = form.getValues('dueDate')
+  const selectedDate = dueDateStr ? new Date(dueDateStr) : undefined
 
   return (
     <Dialog open={open} onOpenChange={(next) => (!next ? close() : null)}>
@@ -112,11 +142,67 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormItem>
-              <FormLabel htmlFor="dueDate">Due Date</FormLabel>
+              <FormLabel>Due</FormLabel>
               <FormControl>
-                <Input id="dueDate" type="date" {...form.register('dueDate')} />
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="date-picker" className="px-1">
+                      Date
+                    </Label>
+                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="date-picker"
+                          className="w-40 justify-between font-normal"
+                        >
+                          {selectedDate ? selectedDate.toLocaleDateString() : 'Select date'}
+                          <ChevronDownIcon className="size-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          captionLayout="dropdown"
+                          onSelect={(d) => {
+                            if (d) {
+                              const iso = new Date(d).toISOString().slice(0, 10)
+                              form.setValue('dueDate', iso)
+                            } else {
+                              form.setValue('dueDate', '')
+                            }
+                            setDateOpen(false)
+                          }}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="time-picker" className="px-1">
+                      Time
+                    </Label>
+                    <Input
+                      type="time"
+                      id="time-picker"
+                      step="1"
+                      {...form.register('dueTime')}
+                      className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      form.setValue('dueDate', '')
+                      form.setValue('dueTime', '')
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </div>
               </FormControl>
-              <FormMessage>{form.formState.errors.dueDate?.toString()}</FormMessage>
             </FormItem>
 
             <FormItem>

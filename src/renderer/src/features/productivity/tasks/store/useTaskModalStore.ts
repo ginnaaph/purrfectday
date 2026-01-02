@@ -14,5 +14,5 @@ export const useTaskModalStore = create<TaskModalStore>((set) => ({
     console.log('[TaskModalStore] open called with taskId:', taskId)
     set({ isOpen: true, selectedTaskId: taskId })
   },
-  close: () => set({ isOpen: false, selectedTaskId: null }),
+  close: () => set({ isOpen: false, selectedTaskId: null })
 }))

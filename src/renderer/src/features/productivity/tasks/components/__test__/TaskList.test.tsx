@@ -54,7 +54,11 @@ describe('TaskList', () => {
   })
 
   it('lists completed section with toggling when incomplete tasks exist', () => {
-    const tasks = [makeTask(1), makeTask(2, { isComplete: true }), makeTask(3, { isComplete: true })]
+    const tasks = [
+      makeTask(1),
+      makeTask(2, { isComplete: true }),
+      makeTask(3, { isComplete: true })
+    ]
     render(<TaskList tasks={tasks} />)
 
     const toggle = screen.getByRole('button', { name: /Show Completed \(2\)/i })

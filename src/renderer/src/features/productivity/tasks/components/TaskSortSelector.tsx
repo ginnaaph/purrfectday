@@ -10,7 +10,7 @@ const options: { label: string; value: SortOptions }[] = [
   { label: 'My order', value: '' },
   { label: 'Date', value: 'date' },
   { label: 'Priority', value: 'priority' },
-  { label: 'Title', value: 'title' },
+  { label: 'Title', value: 'title' }
 ]
 
 export const TaskSortSelector = ({ value, onChange }: TaskSortSelectorProps) => {

@@ -26,7 +26,7 @@ export async function updateTaskProgress(
           : updates.completedAt === null
             ? null
             : updates.completedAt.toISOString(),
-      pomodoros_completed: updates.pomodorosCompleted,
+      pomodoros_completed: updates.pomodorosCompleted
     }).filter(([, v]) => v !== undefined)
   )
 

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,6 +11,10 @@ import { Card, CardHeader, CardContent } from '@/components/card/ui/card'
 import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/side-bar/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
+import { Label } from '@/components/label/ui/label'
+import { ChevronDownIcon } from 'lucide-react'
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
@@ -21,6 +26,9 @@ const schema = z.object({
 type AddTaskFormInput = z.infer<typeof schema>
 
 export const AddTask = () => {
+  const [dateOpen, setDateOpen] = useState(false)
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
+  const [dueTime, setDueTime] = useState<string>('')
   const mutation = useMutation({
     mutationFn: (task: Partial<Task>) => createTask(task),
     onSuccess: () => {
@@ -41,18 +49,34 @@ export const AddTask = () => {
       .map((t) => t.trim())
       .filter((t) => t.length > 0)
 
+    // combine date + time
+    let combinedDue: Date | null = null
+    if (dueDate) {
+      const d = new Date(dueDate)
+      if (dueTime) {
+        const [h, m = '0', s = '0'] = dueTime.split(':')
+        d.setHours(Number(h || 0), Number(m || 0), Number(s || 0), 0)
+      } else {
+        d.setHours(0, 0, 0, 0)
+      }
+      combinedDue = d
+    }
+
     const taskToSave: Partial<Task> = {
       title: data.title,
       description: data.description,
       priority: data.priority ?? null,
       tags: rawTags,
       isComplete: false,
-      estimatedPomodoros: data.estimatedPomodoros ?? null
+      estimatedPomodoros: data.estimatedPomodoros ?? null,
+      dueDate: combinedDue
     }
 
     mutation.mutate(taskToSave, {
       onSuccess: () => {
         reset()
+        setDueDate(undefined)
+        setDueTime('')
       },
       onError: (error) => {
         console.error('Task creation failed:', error)
@@ -113,6 +137,50 @@ export const AddTask = () => {
                 />
               </FormControl>
             </FormItem>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="date-picker" className="px-1">
+                Date
+              </Label>
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    id="date-picker"
+                    className="w-40 justify-between font-normal"
+                  >
+                    {dueDate ? dueDate.toLocaleDateString() : 'Select date'}
+                    <ChevronDownIcon className="size-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={dueDate}
+                    captionLayout="dropdown"
+                    onSelect={(d) => {
+                      setDueDate(d)
+                      setDateOpen(false)
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="time-picker" className="px-1">
+                Time
+              </Label>
+              <Input
+                type="time"
+                id="time-picker"
+                step="1"
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
+            </div>
           </div>
 
           <FormItem>
