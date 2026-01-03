@@ -25,12 +25,12 @@ export const updateTask = async (
               : (updates.dueDate instanceof Date
                   ? updates.dueDate
                   : new Date(updates.dueDate)
-                ).toISOString(),
+                ).toISOString()
         }),
     priority: updates.priority,
     tags: rawTagsArray,
     // Accept updates using either the new `project_id` or legacy `list_id` field.
-    project_id: updates.project_id ?? (updates as any).list_id ?? null,
+    project_id: updates.project_id ?? (updates as any).list_id ?? null
   }
 
   // Include optional fields if provided in the updates object.

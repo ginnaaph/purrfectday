@@ -6,7 +6,7 @@ import type { Task } from '../types'
 import { useTaskModalStore } from '../store/useTaskModalStore'
 import { deleteTask } from '@/features/productivity/tasks/api/deleteTask'
 import { queryClient } from '@/libs/QueryClient'
-import { useFocusTaskStore } from '../store/useFocusTaskStore'
+import { useTaskStore } from '../store/useTaskStore'
 import { useCoinsStore } from '@/features/shop/coins/store/useCoinStore'
 
 import { Checkbox } from '@/components/checkbox/ui/checkbox'
@@ -24,8 +24,8 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
   const navigate = useNavigate()
   const openTaskModal = useTaskModalStore((s) => s.open)
 
-  // ID-based focus (recommended for PurrfectDay)
-  const setFocusedTaskId = useFocusTaskStore((s) => s.setFocusedTaskId)
+  // Use UI-only task store to track the active task
+  const setActiveTaskId = useTaskStore((s) => s.setActiveTaskId)
 
   const addCoins = useCoinsStore((s) => s.addCoins)
 
@@ -133,7 +133,7 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
           className="inline-flex items-center justify-center p-1 rounded-md hover:bg-[#f5e8da] text-[#6a5555] text-sm"
           aria-label="focus on task"
           onClick={() => {
-            setFocusedTaskId(task.id)
+            setActiveTaskId(task.id)
             navigate('/pomodoro', { state: { focusFromTaskList: true } })
           }}
         >

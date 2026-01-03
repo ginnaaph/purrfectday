@@ -3,7 +3,7 @@ export function getFormattedDate() {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    year: 'numeric',
+    year: 'numeric'
   })
 }
 
@@ -12,6 +12,6 @@ export function getFormattedDateFromDate(date: Date) {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    year: 'numeric',
+    year: 'numeric'
   })
 }

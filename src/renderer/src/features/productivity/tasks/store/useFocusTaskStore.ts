@@ -9,5 +9,5 @@ type FocusTaskStore = {
 export const useFocusTaskStore = create<FocusTaskStore>((set) => ({
   focusedTaskId: null,
   setFocusedTaskId: (taskId) => set({ focusedTaskId: taskId }),
-  clearFocusedTask: () => set({ focusedTaskId: null }),
+  clearFocusedTask: () => set({ focusedTaskId: null })
 }))

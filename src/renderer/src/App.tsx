@@ -3,12 +3,12 @@ import { queryClient } from './libs/QueryClient'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { TodayPg } from './features/dashboards/pages/TodayPg'
-import { JournalPg } from './features/reacharge/journal/pages/JournalPg'
 import { TasksPg } from './features/productivity/pages/TasksPg'
 import { ProjectPg } from './features/productivity/pages/ProjectPg'
 import { PomodoroPg } from './features/productivity/pages/PomodoroPg'
 import { GoalsPg } from './features/productivity/pages/GoalsPg'
 import { OverviewPg } from './features/dashboards/pages/OverviewPg'
+import { JournalPg } from './features/recharge/journal/pages/JournalPg'
 
 
 const App = () => {

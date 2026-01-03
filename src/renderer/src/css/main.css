@@ -95,3 +95,32 @@
 body {
   @apply bg-background text-foreground;
 }
+
+.range-custom {
+  -webkit-appearance: none;
+  width: 100%;
+  height: px;
+  border-radius: 4px;
+  background: 'transparent';
+}
+.range-custom::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #af95ae var(--progress-percent),
+    #ffffff var(--progress-percent)
+  );
+}
+.range-custom::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -5px; /* Centers the thumb on the track */
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #af95ae;
+  cursor: pointer;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}

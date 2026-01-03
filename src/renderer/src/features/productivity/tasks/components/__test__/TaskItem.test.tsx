@@ -14,12 +14,24 @@ vi.mock('../../store/useTaskModalStore', () => {
   }
 })
 
-vi.mock('../../store/useFocusTaskStore', () => {
-  const setFocusedTaskId = vi.fn()
+vi.mock('../../store/useTaskStore', () => {
+  const setActiveTaskId = vi.fn()
   return {
-    useFocusTaskStore: (sel: any) =>
-      sel({ focusedTaskId: null, setFocusedTaskId, clearFocusedTask: vi.fn() }),
-    __mocks: { setFocusedTaskId }
+    useTaskStore: (sel: any) =>
+      sel({
+        activeTaskId: null,
+        selectedTaskId: null,
+        lastCoinsEarned: 0,
+        error: null,
+        setActiveTaskId,
+        setSelectedTaskId: vi.fn(),
+        clearSelectedTask: vi.fn(),
+        setLastCoinsEarned: vi.fn(),
+        clearLastCoinsEarned: vi.fn(),
+        setError: vi.fn(),
+        resetTaskUiState: vi.fn()
+      }),
+    __mocks: { setActiveTaskId }
   }
 })
 
@@ -82,14 +94,14 @@ describe('TaskItem', () => {
   })
 
   it('focuses task and navigates to pomodoro on focus button', async () => {
-    const focusMod = await import('../../store/useFocusTaskStore')
+    const taskStoreMod = await import('../../store/useTaskStore')
     const routerMod = await import('react-router-dom')
-    const setFocusedMock = (focusMod as any).__mocks.setFocusedTaskId
+    const setActiveMock = (taskStoreMod as any).__mocks.setActiveTaskId
     const navigateMock = (routerMod as any).__mocks.navigate
 
     renderWithProviders(<TaskItem task={baseTask} />)
     fireEvent.click(screen.getByRole('button', { name: /focus on task/i }))
-    expect(setFocusedMock).toHaveBeenCalledWith(1)
+    expect(setActiveMock).toHaveBeenCalledWith(1)
     expect(navigateMock).toHaveBeenCalledWith('/pomodoro', { state: { focusFromTaskList: true } })
   })
 

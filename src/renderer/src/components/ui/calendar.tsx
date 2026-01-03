@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import * as React from 'react'
 import { DayPicker } from 'react-day-picker'
@@ -6,7 +6,12 @@ import { cn } from '@/libs/utils'
 
 import 'react-day-picker/dist/style.css'
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }: React.ComponentProps<typeof DayPicker> & { className?: string }) {
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  ...props
+}: React.ComponentProps<typeof DayPicker> & { className?: string }) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -28,7 +33,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: R
         day_today: 'bg-accent text-accent-foreground',
         day_outside: 'text-muted-foreground opacity-50',
         day_disabled: 'text-muted-foreground opacity-50',
-      , ...(classNames || {})}}
+        ...(classNames || {})
+      }}
       {...props}
     />
   )

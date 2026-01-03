@@ -31,11 +31,11 @@ export const useCoinsStore = create<CoinsStore>()(
 
       resetCoins: () => {
         set({ coins: 0 })
-      },
+      }
     }),
     {
       name: 'coins-storage', // localStorage key
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => localStorage)
     }
   )
 )

@@ -2,7 +2,7 @@ import { supabase } from '@/libs/supabaseClient'
 import { Task } from '@/features/productivity/tasks/types'
 
 export const selectATask = async (taskId: number): Promise<Task | null> => {
-  const { data, error } = await supabase.from('tasks').select('*').eq('id', taskId).maybeSingle()
+  const { data } = await supabase.from('tasks').select('*').eq('id', taskId).maybeSingle()
 
   if (!data) return null
 
