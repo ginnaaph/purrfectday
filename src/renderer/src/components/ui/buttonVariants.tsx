@@ -5,13 +5,14 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white shadow hover:bg-primary/90',
-        destructive: 'bg-secondary text-white shadow-sm hover:bg-secondary/90',
+        default: 'bg-primary-alt text-white shadow hover:bg-primary-alt/60',
+        destructive: 'bg-primary text-white shadow-sm hover:bg-primary/90',
         outline:
-          'border border-input border-primary shadow-sm hover:bg-primary-alt hover:text-white',
+          'border-1 border-input text-primary-alt border-primary-alt shadow-sm hover:bg-primary-alt/40 hover:text-white',
         secondary: 'bg-cool-accent text-primary shadow-sm hover:bg-cool-accent/80',
-        ghost: 'hover:bg-primary-alt hover:text-primary-alt',
-        link: 'text-primary underline-offset-4 hover:underline'
+        ghost: 'hover:bg-primary-alt text-primary-alt hover:text-primary-alt',
+        link: 'text-primary-alt underline-offset-4 hover:underline',
+        subtle: 'bg-secondary-background text-primary-alt hover:bg-secondary-background/50'
       },
       size: {
         default: 'h-9 px-4 py-2',

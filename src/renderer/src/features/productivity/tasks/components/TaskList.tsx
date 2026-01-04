@@ -5,6 +5,7 @@ import { useTaskModalStore } from '../store/useTaskModalStore'
 import type { Task } from '../types'
 import sleepingcat from '@/assets/images/cat/sleep.png'
 import { Card, CardContent, CardHeader } from '@/components/card/ui/card'
+import { ProjectTabs } from '../../projects/components/ProjectTabs'
 
 type TaskListProps = {
   tasks: Task[]
@@ -57,6 +58,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   return (
     <Card>
       <CardHeader className="text-heading mb-0">Tasks</CardHeader>
+      <ProjectTabs />
       <CardContent>
         <ul className="space-y-3 not-visited:ml-1 mt-0">
           {incomplete.map((task) => (

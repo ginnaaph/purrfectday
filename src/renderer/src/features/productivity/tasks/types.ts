@@ -25,3 +25,9 @@ export interface TaskApiUpdateInput {
   estimated_pomodoros?: number | null
   earnedCoins?: number | null
 }
+
+export type Project = {
+  id: number
+  name: string
+  icon?: string
+}

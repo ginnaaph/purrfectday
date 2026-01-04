@@ -6,12 +6,11 @@ import { useTaskDetailData } from '../hooks/useTaskDetailData'
 import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/text-area/ui/textArea'
-import { Button } from '@/components/ui/button'
 import { useTaskModalStore } from '../store/useTaskModalStore'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { Label } from '@/components/label/ui/label'
 import { ChevronDownIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -37,6 +36,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   const close = useTaskModalStore((s) => s.close)
   const { task, updateTaskMutation } = useTaskDetailData(taskId)
   const [dateOpen, setDateOpen] = useState(false)
+  const [timeTouched, setTimeTouched] = useState(false)
 
   const form = useForm<TaskDetailsFormInput>({
     resolver: zodResolver(schema),
@@ -114,16 +114,17 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
 
   return (
     <Dialog open={open} onOpenChange={(next) => (!next ? close() : null)}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg gap-6">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <DialogTitle className="font-bold text-xl">Edit Task</DialogTitle>
         </DialogHeader>
 
-        <Form className="space-y-4">
+        <Form className="gap-4 flex flex-col">
           <FormItem>
             <FormLabel htmlFor="title">Title</FormLabel>
             <FormControl>
               <Input
+                className="selection:bg-primary-alt/30"
                 id="title"
                 {...form.register('title')}
                 aria-invalid={!!form.formState.errors.title}
@@ -140,88 +141,86 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
             <FormMessage>{form.formState.errors.description?.message}</FormMessage>
           </FormItem>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
             <FormItem>
-              <FormLabel>Due</FormLabel>
+              <FormLabel htmlFor="date-picker">Due Date</FormLabel>
               <FormControl>
-                <div className="flex items-center gap-3">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="date-picker" className="px-1">
-                      Date
-                    </Label>
-                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          id="date-picker"
-                          className="w-40 justify-between font-normal"
-                        >
-                          {selectedDate ? selectedDate.toLocaleDateString() : 'Select date'}
-                          <ChevronDownIcon className="size-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={selectedDate}
-                          captionLayout="dropdown"
-                          onSelect={(d) => {
-                            if (d) {
-                              const iso = new Date(d).toISOString().slice(0, 10)
-                              form.setValue('dueDate', iso)
-                            } else {
-                              form.setValue('dueDate', '')
-                            }
-                            setDateOpen(false)
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="time-picker" className="px-1">
-                      Time
-                    </Label>
-                    <Input
-                      type="time"
-                      id="time-picker"
-                      step="1"
-                      {...form.register('dueTime')}
-                      className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date-picker"
+                      className="w-full justify-between font-normal border-primary border-1 bg-transparent text-primary"
+                    >
+                      {selectedDate ? selectedDate.toLocaleDateString() : 'Select date'}
+                      <ChevronDownIcon className="size-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                    <Calendar
+                      className="rounded-lg"
+                      mode="single"
+                      selected={selectedDate}
+                      captionLayout="dropdown"
+                      onSelect={(d) => {
+                        if (d) {
+                          const iso = new Date(d).toISOString().slice(0, 10)
+                          form.setValue('dueDate', iso)
+                        } else {
+                          form.setValue('dueDate', '')
+                        }
+                        setDateOpen(false)
+                      }}
                     />
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      form.setValue('dueDate', '')
-                      form.setValue('dueTime', '')
-                    }}
-                  >
-                    Clear
-                  </Button>
-                </div>
+                  </PopoverContent>
+                </Popover>
               </FormControl>
             </FormItem>
 
             <FormItem>
-              <FormLabel htmlFor="priority">Priority</FormLabel>
+              <FormLabel htmlFor="time-picker">Time</FormLabel>
               <FormControl>
-                <select
-                  id="priority"
-                  className="border-input h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none"
-                  {...form.register('priority')}
-                >
-                  <option value="">None</option>
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
+                <Input
+                  type="time"
+                  id="time-picker"
+                  defaultValue="00:00:00"
+                  onFocus={() => setTimeTouched(true)}
+                  step="1"
+                  {...form.register('dueTime')}
+                  className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                />
               </FormControl>
-              <FormMessage>{form.formState.errors.priority?.toString()}</FormMessage>
             </FormItem>
+
+            <div className="flex items-center">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => {
+                  form.setValue('dueDate', '')
+                  form.setValue('dueTime', '')
+                }}
+              >
+                Clear
+              </Button>
+            </div>
           </div>
+
+          <FormItem>
+            <FormLabel htmlFor="priority">Priority</FormLabel>
+            <FormControl>
+              <select
+                id="priority"
+                className="border-input h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none"
+                {...form.register('priority')}
+              >
+                <option value="">None</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </FormControl>
+            <FormMessage>{form.formState.errors.priority?.toString()}</FormMessage>
+          </FormItem>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormItem>
@@ -249,10 +248,10 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
             </FormItem>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="pt-6 gap-2">
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               onClick={() => close()}
               disabled={updateTaskMutation.isPending}
             >

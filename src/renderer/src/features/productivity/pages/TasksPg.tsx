@@ -23,7 +23,9 @@ export const TasksPg = () => {
       <div className="w-2/3 flex flex-col h-full min-h-0">Timeblock compoent goes here</div>
       <div className="w-1/3 flex flex-col h-full min-h-0 justify-between mr-4">
         <div className="flex-1 min-h-0 flex flex-col overflow-auto mr-6 pr-1">
+          <div className="mt-3">
           <TaskList tasks={tasks} />
+          </div>
         </div>
       </div>
     </div>
