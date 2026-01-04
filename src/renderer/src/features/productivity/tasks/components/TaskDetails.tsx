@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -32,11 +32,14 @@ type TaskDetailsFormInput = z.infer<typeof schema>
 
 export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   const isOpen = useTaskModalStore((s) => s.isOpen)
+  const [isEditing, setIsEditing] = useState(false)
   const selectedTaskId = useTaskModalStore((s) => s.selectedTaskId)
   const close = useTaskModalStore((s) => s.close)
+
   const { task, updateTaskMutation } = useTaskDetailData(taskId)
+
   const [dateOpen, setDateOpen] = useState(false)
-  const [timeTouched, setTimeTouched] = useState(false)
+  const timeTouchedRef = useRef(false)
 
   const form = useForm<TaskDetailsFormInput>({
     resolver: zodResolver(schema),
@@ -46,31 +49,43 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
       priority: undefined,
       tags: '',
       estimatedPomodoros: null,
-      dueDate: ''
+      dueDate: '',
+      dueTime: ''
     }
   })
 
-  useEffect(() => {
-    if (!task) return
-    form.reset({
-      title: task.title ?? '',
-      description: task.description ?? '',
-      priority: task.priority ?? undefined,
-      tags: (task.tags ?? []).join(', '),
+  const open = isOpen && !!selectedTaskId && selectedTaskId === taskId
+
+  // Helper: derive form values from task (single source of truth for resets)
+  const getFormValuesFromTask = () => {
+    const values: TaskDetailsFormInput = {
+      title: task?.title ?? '',
+      description: task?.description ?? '',
+      priority: (task?.priority as TaskDetailsFormInput['priority']) ?? undefined,
+      tags: (task?.tags ?? []).join(', '),
       estimatedPomodoros:
-        typeof task.estimatedPomodoros === 'number' ? task.estimatedPomodoros : null,
-      dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : ''
-    })
-    if (task.dueDate) {
+        typeof task?.estimatedPomodoros === 'number' ? task.estimatedPomodoros : null,
+      dueDate: task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : '',
+      dueTime: ''
+    }
+
+    if (task?.dueDate) {
       const d = new Date(task.dueDate)
       const hh = String(d.getHours()).padStart(2, '0')
       const mm = String(d.getMinutes()).padStart(2, '0')
       const ss = String(d.getSeconds()).padStart(2, '0')
-      form.setValue('dueTime', `${hh}:${mm}:${ss}`)
-    } else {
-      form.setValue('dueTime', '')
+      values.dueTime = `${hh}:${mm}:${ss}`
     }
-  }, [task, form])
+
+    return values
+  }
+
+  // When task loads/changes, sync form
+  useEffect(() => {
+    if (!task) return
+    form.reset(getFormValuesFromTask())
+    timeTouchedRef.current = false
+  }, [task]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function onSubmit(values: TaskDetailsFormInput) {
     if (!selectedTaskId) return
@@ -79,8 +94,11 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     let combinedDue: Date | null = null
     if (values.dueDate) {
       const d = new Date(values.dueDate)
-      if (values.dueTime) {
-        const [h, m = '0', s = '0'] = values.dueTime.split(':')
+
+      const timeToApply = timeTouchedRef.current ? values.dueTime : ''
+
+      if (timeToApply) {
+        const [h, m = '0', s = '0'] = timeToApply.split(':')
         d.setHours(Number(h || 0), Number(m || 0), Number(s || 0), 0)
       } else {
         d.setHours(0, 0, 0, 0)
@@ -108,109 +126,201 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     )
   }
 
-  const open = isOpen && !!selectedTaskId && selectedTaskId === taskId
+  // Option 1 cancel: exit edit + revert changes to task values
+  const handleCancelEdit = () => {
+    if (!task) {
+      setIsEditing(false)
+      return
+    }
+    form.reset(getFormValuesFromTask())
+    setIsEditing(false)
+    timeTouchedRef.current = false
+    setDateOpen(false)
+  }
+
   const dueDateStr = form.getValues('dueDate')
   const selectedDate = dueDateStr ? new Date(dueDateStr) : undefined
 
   return (
-    <Dialog open={open} onOpenChange={(next) => (!next ? close() : null)}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
+          setIsEditing(false)
+          timeTouchedRef.current = false
+          close()
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-lg gap-6">
         <DialogHeader>
-          <DialogTitle className="font-bold text-xl">Edit Task</DialogTitle>
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle className="font-bold text-xl">
+              {isEditing ? 'Edit Task' : form.getValues('title') || 'Untitled Task'}
+            </DialogTitle>
+
+            {!isEditing && (
+              <Button type="button" variant="outline" onClick={() => setIsEditing(true)}>
+                Edit
+              </Button>
+            )}
+          </div>
         </DialogHeader>
 
         <Form className="gap-4 flex flex-col">
+          {/* Title */}
           <FormItem>
-            <FormLabel htmlFor="title">Title</FormLabel>
+            <FormLabel className="text-md " htmlFor="title">
+              Title
+            </FormLabel>
             <FormControl>
-              <Input
-                className="selection:bg-primary-alt/30"
-                id="title"
-                {...form.register('title')}
-                aria-invalid={!!form.formState.errors.title}
-              />
+              {isEditing ? (
+                <Input
+                  className="selection:bg-primary-alt/30"
+                  id="title"
+                  {...form.register('title')}
+                  aria-invalid={!!form.formState.errors.title}
+                />
+              ) : (
+                <div className="border border-transparent h-9 px-3 py-2 rounded-md text-sm leading-5 text-primary-alt bg-secondary-background/50 flex items-center">
+                  {form.getValues('title') || (
+                    <span className="text-muted-foreground">Enter title</span>
+                  )}
+                </div>
+              )}
             </FormControl>
             <FormMessage>{form.formState.errors.title?.message}</FormMessage>
           </FormItem>
 
+          {/* Description */}
           <FormItem>
-            <FormLabel htmlFor="description">Description</FormLabel>
+            <FormLabel className="text-md " htmlFor="description">
+              Description
+            </FormLabel>
             <FormControl>
-              <Textarea id="description" rows={4} {...form.register('description')} />
+              {isEditing ? (
+                <Textarea id="description" rows={4} {...form.register('description')} />
+              ) : (
+                <div className="border border-transparent min-h-24 px-3 py-2 rounded-md text-sm leading-5 text-primary-alt bg-secondary-background/50 flex items-center">
+                  {form.getValues('description') ? (
+                    <span className="whitespace-pre-wrap">{form.getValues('description')}</span>
+                  ) : (
+                    <span className="text-muted-foreground">No description</span>
+                  )}
+                </div>
+              )}
             </FormControl>
             <FormMessage>{form.formState.errors.description?.message}</FormMessage>
           </FormItem>
 
+          {/* Due Date / Time / Clear */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
             <FormItem>
-              <FormLabel htmlFor="date-picker">Due Date</FormLabel>
+              <FormLabel className="text-md " htmlFor="date-picker">
+                Due Date
+              </FormLabel>
               <FormControl>
-                <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="date-picker"
-                      className="w-full justify-between font-normal border-primary border-1 bg-transparent text-primary"
-                    >
-                      {selectedDate ? selectedDate.toLocaleDateString() : 'Select date'}
-                      <ChevronDownIcon className="size-4" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <Calendar
-                      className="rounded-lg"
-                      mode="single"
-                      selected={selectedDate}
-                      captionLayout="dropdown"
-                      onSelect={(d) => {
-                        if (d) {
-                          const iso = new Date(d).toISOString().slice(0, 10)
-                          form.setValue('dueDate', iso)
-                        } else {
-                          form.setValue('dueDate', '')
-                        }
-                        setDateOpen(false)
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
+                {isEditing ? (
+                  <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="date-picker"
+                        className="w-full justify-between font-normal border-primary border bg-transparent text-primary"
+                      >
+                        {selectedDate ? selectedDate.toLocaleDateString() : 'Select date'}
+                        <ChevronDownIcon className="size-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                      <Calendar
+                        className="rounded-lg"
+                        mode="single"
+                        selected={selectedDate}
+                        captionLayout="dropdown"
+                        onSelect={(d) => {
+                          if (d) {
+                            const iso = new Date(d).toISOString().slice(0, 10)
+                            form.setValue('dueDate', iso)
+                          } else {
+                            form.setValue('dueDate', '')
+                          }
+                          setDateOpen(false)
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <div className="h-9 px-3 py-2 rounded-md text-sm leading-5 bg-secondary-background/50 text-primary-alt flex items-center">
+                    {selectedDate ? (
+                      selectedDate.toLocaleDateString()
+                    ) : (
+                      <span className="text-muted-foreground">No due date</span>
+                    )}
+                  </div>
+                )}
               </FormControl>
             </FormItem>
 
             <FormItem>
-              <FormLabel htmlFor="time-picker">Time</FormLabel>
+              <FormLabel className="text-md " htmlFor="time-picker">
+                Time
+              </FormLabel>
               <FormControl>
-                <Input
-                  type="time"
-                  id="time-picker"
-                  defaultValue="00:00:00"
-                  onFocus={() => setTimeTouched(true)}
-                  step="1"
-                  {...form.register('dueTime')}
-                  className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                />
+                {isEditing ? (
+                  <Input
+                    type="time"
+                    id="time-picker"
+                    defaultValue="00:00:00"
+                    onFocus={() => {
+                      timeTouchedRef.current = true
+                    }}
+                    step="1"
+                    {...form.register('dueTime')}
+                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  />
+                ) : (
+                  <div className="h-9 px-3 py-2 rounded-md text-sm leading-5 bg-secondary-background/50 text-primary-alt flex items-center">
+                    {form.getValues('dueTime') ? (
+                      form.getValues('dueTime')
+                    ) : (
+                      <span className="text-muted-foreground">00:00</span>
+                    )}
+                  </div>
+                )}
               </FormControl>
             </FormItem>
 
-            <div className="flex items-center">
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => {
-                  form.setValue('dueDate', '')
-                  form.setValue('dueTime', '')
-                }}
-              >
-                Clear
-              </Button>
-            </div>
+            {isEditing ? (
+              <div className="flex items-center">
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => {
+                    form.setValue('dueDate', '')
+                    form.setValue('dueTime', '')
+                    timeTouchedRef.current = false
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            ) : (
+              <div />
+            )}
           </div>
 
+          {/* Priority */}
           <FormItem>
-            <FormLabel htmlFor="priority">Priority</FormLabel>
+            <FormLabel className="text-md " htmlFor="priority">
+              Priority
+            </FormLabel>
             <FormControl>
               <select
                 id="priority"
-                className="border-input h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none"
+                disabled={!isEditing}
+                className={`border-input h-9 w-full rounded-md border px-3 py-1 text-sm outline-none disabled:opacity-60 ${
+                  isEditing ? 'bg-transparent' : 'bg-secondary-background/50 border-none'
+                }`}
                 {...form.register('priority')}
               >
                 <option value="">None</option>
@@ -222,15 +332,22 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
             <FormMessage>{form.formState.errors.priority?.toString()}</FormMessage>
           </FormItem>
 
+          {/* Est Pomodoros + Tags */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormItem>
-              <FormLabel htmlFor="estimatedPomodoros">Est. Pomodoros</FormLabel>
+              <FormLabel className="text-md" htmlFor="estimatedPomodoros">
+                Est. Pomodoros
+              </FormLabel>
               <FormControl>
                 <Input
                   id="estimatedPomodoros"
                   type="number"
                   min={0}
                   step={1}
+                  disabled={!isEditing}
+                  className={`disabled:opacity-60 ${
+                    isEditing ? 'bg-transparent' : 'bg-secondary-background/50 border-none'
+                  }`}
                   {...form.register('estimatedPomodoros', {
                     setValueAs: (v) => (v === '' || v === null ? null : Number(v))
                   })}
@@ -240,30 +357,49 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel htmlFor="tags">Tags (comma-separated)</FormLabel>
+              <FormLabel className="text-md" htmlFor="tags">
+                Tags (comma-separated)
+              </FormLabel>
               <FormControl>
-                <Input id="tags" placeholder="work, urgent" {...form.register('tags')} />
+                <Input
+                  id="tags"
+                  placeholder="work, urgent"
+                  disabled={!isEditing}
+                  className={`disabled:opacity-60 ${
+                    isEditing ? 'bg-transparent' : 'bg-secondary-background/50 border-none'
+                  }`}
+                  {...form.register('tags')}
+                />
               </FormControl>
               <FormMessage>{form.formState.errors.tags?.toString()}</FormMessage>
             </FormItem>
           </div>
 
+          {/* Footer */}
           <DialogFooter className="pt-6 gap-2">
             <Button
               type="button"
               variant="outline"
-              onClick={() => close()}
+              onClick={() => {
+                if (isEditing) handleCancelEdit()
+                else close()
+              }}
               disabled={updateTaskMutation.isPending}
             >
-              Cancel
+              {isEditing ? 'Cancel' : 'Close'}
             </Button>
-            <Button
-              type="button"
-              onClick={form.handleSubmit(onSubmit as (v: TaskDetailsFormInput) => void)}
-              disabled={updateTaskMutation.isPending}
-            >
-              {updateTaskMutation.isPending ? 'Saving…' : 'Save'}
-            </Button>
+
+            {isEditing && (
+              <Button
+                type="button"
+                onClick={() => {
+                  form.handleSubmit(onSubmit)()
+                }}
+                disabled={updateTaskMutation.isPending}
+              >
+                {updateTaskMutation.isPending ? 'Saving…' : 'Save'}
+              </Button>
+            )}
           </DialogFooter>
         </Form>
       </DialogContent>

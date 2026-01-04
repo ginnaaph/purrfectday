@@ -85,12 +85,14 @@ export const AddTask = () => {
   }
 
   return (
-    <Card className="border-none">
-      <CardHeader>Add New Task</CardHeader>
-      <CardContent>
-        <Form>
+    <Card className="border-none shadow-none">
+      <CardHeader className="font-bold text-xl text-primary-alt">Add New Task</CardHeader>
+      <CardContent className="gap-3">
+        <Form className="gap-4 flex flex-col">
           <FormItem>
-            <FormLabel htmlFor="title">Title</FormLabel>
+            <FormLabel className="text-md pb-2" htmlFor="title">
+              Title
+            </FormLabel>
             <FormControl>
               <Input id="title" placeholder="Task title" {...register('title')} />
               <FormMessage>{errors.title?.message}</FormMessage>
@@ -98,7 +100,9 @@ export const AddTask = () => {
           </FormItem>
 
           <FormItem>
-            <FormLabel htmlFor="description">Description</FormLabel>
+            <FormLabel className="text-md pb-2" htmlFor="description">
+              Description
+            </FormLabel>
             <FormControl>
               <Input
                 id="description"
@@ -110,7 +114,9 @@ export const AddTask = () => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormItem>
-              <FormLabel htmlFor="priority">Priority</FormLabel>
+              <FormLabel className="text-md pb-2" htmlFor="priority">
+                Priority
+              </FormLabel>
               <FormControl>
                 <select
                   id="priority"
@@ -126,7 +132,9 @@ export const AddTask = () => {
             </FormItem>
 
             <FormItem>
-              <FormLabel htmlFor="estimatedPomodoros">Estimated Pomodoros</FormLabel>
+              <FormLabel className="text-md pb-2" htmlFor="estimatedPomodoros">
+                Estimated Pomodoros
+              </FormLabel>
               <FormControl>
                 <Input
                   id="estimatedPomodoros"
@@ -140,16 +148,15 @@ export const AddTask = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="date-picker" className="px-1">
+            <div className="flex flex-col">
+              <Label htmlFor="date-picker" className="px-1 text-md ">
                 Date
               </Label>
               <Popover open={dateOpen} onOpenChange={setDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant="outline"
                     id="date-picker"
-                    className="w-40 justify-between font-normal"
+                    className="w-40 justify-between  border bg-transparent border-primary text-primary"
                   >
                     {dueDate ? dueDate.toLocaleDateString() : 'Select date'}
                     <ChevronDownIcon className="size-4" />
@@ -168,8 +175,8 @@ export const AddTask = () => {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="time-picker" className="px-1">
+            <div className="flex flex-col">
+              <Label htmlFor="time-picker" className="px-1 text-md ">
                 Time
               </Label>
               <Input
@@ -184,7 +191,9 @@ export const AddTask = () => {
           </div>
 
           <FormItem>
-            <FormLabel htmlFor="tags">Tags (comma separated)</FormLabel>
+            <FormLabel className="text-md pb-2" htmlFor="tags">
+              Tags (comma separated)
+            </FormLabel>
             <FormControl>
               <Input id="tags" placeholder="e.g. work,urgent,deep focus" {...register('tags')} />
             </FormControl>
