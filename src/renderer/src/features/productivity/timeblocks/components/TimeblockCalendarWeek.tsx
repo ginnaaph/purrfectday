@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Availability } from '@/components/availability/ui/availability'
 import { useTimeblocks } from '../hooks/useTimeblocks'
 
@@ -13,6 +12,7 @@ export function TimeblockCalendarWeek() {
       timeIncrements={30}
       startTime={7}
       endTime={23}
+      className="h-full min-h-0"
     />
   )
 }

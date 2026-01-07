@@ -158,14 +158,14 @@ export const AddTask = () => {
                     id="date-picker"
                     className="w-40 justify-between  border bg-transparent border-primary text-primary"
                   >
-                    {dueDate ? dueDate.toLocaleDateString() : 'Select date'}
+                    {dueDate ? new Date(dueDate).toLocaleDateString() : 'Select date'}
                     <ChevronDownIcon className="size-4" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={dueDate}
+                    selected={dueDate ? new Date(dueDate) : undefined}
                     captionLayout="dropdown"
                     onSelect={(d) => {
                       setDueDate(d)

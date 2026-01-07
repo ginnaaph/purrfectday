@@ -54,7 +54,7 @@ export function TimeblockCalendar() {
   }, [currentDate, view])
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 h-full p-3 min-h-0">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export function TimeblockCalendar() {
       </div>
 
       {/* Body */}
-      <div className="rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt">
+      <div className="flex-1 min-h-0 overflow-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt">
         {view === 'day' ? (
           <TimeblockCalendarDay currentDate={currentDate} />
         ) : (

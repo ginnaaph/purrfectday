@@ -31,6 +31,7 @@ interface AvailabilityProps {
   startTime?: number // hour 0-23, default 7
   endTime?: number // hour 0-23, default 23
   useAmPm?: boolean
+  currentDate?: Date // base date to compute the week dates
   className?: string
 }
 
@@ -57,7 +58,8 @@ const formatDisplayTime = (time: string, useAmPm: boolean) => {
 
 const generateId = () => Math.random().toString(36).substring(2, 11)
 
-const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+// Sunday-first to match Date.getDay() (0 = Sunday)
+const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
 // --- Components ---
 
@@ -69,11 +71,13 @@ export function Availability({
   startTime = 7,
   endTime = 23,
   useAmPm = false,
+  currentDate = new Date(),
   className
 }: AvailabilityProps) {
   const [internalValue, setInternalValue] = React.useState<TimeSpan[]>(value)
   const [activeId, setActiveId] = React.useState<string | null>(null)
   const containerRef = React.useRef<HTMLDivElement>(null)
+  const gridRef = React.useRef<HTMLDivElement>(null)
 
   // Sync controlled/uncontrolled state
   React.useEffect(() => {
@@ -87,6 +91,13 @@ export function Availability({
 
   const totalMinutes = (endTime - startTime) * 60
   const startOffset = startTime * 60
+  const weekStart = React.useMemo(() => {
+    const d = new Date(currentDate)
+    d.setHours(0, 0, 0, 0)
+    const dow = d.getDay() // 0-6 (Sun-Sat)
+    d.setDate(d.getDate() - dow)
+    return d
+  }, [currentDate])
 
   // --- Handlers ---
 
@@ -117,7 +128,7 @@ export function Availability({
     // We assume the user dragged `event.delta.y` pixels.
     // We need to convert pixels to minutes.
 
-    const containerHeight = containerRef.current?.clientHeight || 1
+    const containerHeight = gridRef.current?.clientHeight || containerRef.current?.clientHeight || 1
     const pixelsPerMinute = containerHeight / totalMinutes
     const deltaMinutes =
       Math.round(event.delta.y / pixelsPerMinute / timeIncrements) * timeIncrements
@@ -187,30 +198,37 @@ export function Availability({
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div
         className={cn(
-          'flex h-150 w-full flex-col overflow-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none',
+          'flex h-full min-h-0 w-full flex-col overflow-y-auto overflow-x-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none',
           className
         )}
         ref={containerRef}
       >
         {/* Header */}
-        <div className="flex w-full border-b border-primary-alt/15 bg-secondary-background">
-          <div className="w-16 shrink-0 border-r border-primary-alt/15 p-2 text-xs font-medium text-primary-alt">
+        <div className="sticky top-0 z-10 flex w-full border-b border-primary-alt/15 bg-secondary-background">
+          <div className="w-16 shrink-0 border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
             {/* Time label column header */}
           </div>
           <div className="flex flex-1">
-            {days.map((dayIndex) => (
-              <div
-                key={dayIndex}
-                className="flex-1 border-r border-primary-alt/15 px-2 py-3 text-center text-sm font-medium text-primary-alt last:border-r-0"
-              >
-                {DAYS[dayIndex]}
-              </div>
-            ))}
+            {days.map((dayIndex) => {
+              const dayDate = new Date(weekStart)
+              dayDate.setDate(weekStart.getDate() + dayIndex)
+              return (
+                <div
+                  key={dayIndex}
+                  className="flex-1 min-w-25 border-r border-primary-alt/15 px-2 py-2 text-center text-md font-bold text-primary-alt last:border-r-0"
+                >
+                  <div className="leading-tight">{DAYS[dayIndex]}</div>
+                  <div className="text-xs font-medium text-primary-alt/80">
+                    {dayDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex flex-1 overflow-y-auto scrollbar-hidden">
+        <div className="flex flex-1 scrollbar-hidden">
           {/* Time Labels */}
           <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background">
             <div className="relative h-full w-full">
@@ -226,14 +244,14 @@ export function Availability({
                     style={{ top: `${top}%` }}
                   >
                     {formatDisplayTime(`${hour}:00`, useAmPm)}
-               </div>
+                  </div>
                 )
               })}
             </div>
           </div>
 
           {/* Days Grid */}
-          <div className="flex flex-1 relative">
+          <div className="flex flex-1 relative" ref={gridRef}>
             {/* Background Grid Lines */}
             <div className="absolute inset-0 pointer-events-none flex flex-col">
               {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map((_, i) => (
@@ -383,7 +401,7 @@ function DayColumn({
 
       {isCreating && creationStart !== null && currentMouseY !== null && (
         <div
-          className="absolute left-0 right-0 mx-1 rounded bg-secondary-background/70 border border-primary-alt/20 z-20 pointer-events-none"
+          className="absolute left-0 right-0 mx-1 rounded bg-primary-background/70 border border-primary-alt/20 z-20 pointer-events-none"
           style={{
             top: `${((creationStart - startOffset) / totalMinutes) * 100}%`,
             height: `${((currentMouseY - creationStart) / totalMinutes) * 100}%`
