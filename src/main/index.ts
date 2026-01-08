@@ -7,6 +7,9 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 850,
+    minWidth: 375, // minimum width for mobile
+    minHeight: 600, // mindimum height for mobile
+    resizable: true,
     show: false,
     title: 'Purrfect Day',
     autoHideMenuBar: true,

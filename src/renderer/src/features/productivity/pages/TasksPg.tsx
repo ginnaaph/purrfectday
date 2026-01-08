@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getAllTasks } from '../tasks/api/getAllTasks'
 import { TaskList } from '../tasks/components/TaskList'
 import { TimeblockCalendar } from '../timeblocks/components/TimeblockCalendar'
-
+import { PomodoroWidget } from '../pomodoro/components/PomodoroWidget'
 export const TasksPg = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['tasks'],
@@ -20,17 +20,18 @@ export const TasksPg = () => {
   }
 
   return (
-    <div className="h-screen w-full bg-[#f9f7f4] flex flex-row gap-6 px-3 py-4 mr-3 ml-3 rounded-xl overflow-hidden">
-      <div className="w-2/3 flex flex-col h-full min-h-0">
-        <div className="flex-1 min-h-0 flex flex-col overflow-hidden p-3">
+    <div className="h-screen w-full bg-[#f9f7f4] flex flex-row gap-4 p-3 rounded-xl overflow-hidden overflow-x-hidden">
+      <div className="flex-1 p-2 flex flex-col h-full min-h-0">
+        <div className="flex-1  flex shrink flex-col overflow-hidden">
           <TimeblockCalendar />
         </div>
       </div>
-      <div className="w-1/3 flex flex-col h-full min-h-0 justify-between mr-4">
-        <div className="flex-1 min-h-0 flex flex-col overflow-auto mr-6 pr-1">
-          <div className="mt-3">
-            <TaskList tasks={tasks} />
-          </div>
+      <div className="flex shrink basis-[35%] min-w-[300px] max-w-[480px] flex-col h-full min-h-0 justify-between">
+       <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden">
+          <TaskList tasks={tasks} />
+        </div>
+        <div className="flex flex-col items-center py-2">
+          <PomodoroWidget />
         </div>
       </div>
     </div>

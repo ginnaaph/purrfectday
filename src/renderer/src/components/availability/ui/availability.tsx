@@ -198,7 +198,7 @@ export function Availability({
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div
         className={cn(
-          'flex h-full min-h-0 w-full flex-col overflow-y-auto overflow-x-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none',
+          'flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none',
           className
         )}
         ref={containerRef}
@@ -208,7 +208,7 @@ export function Availability({
           <div className="w-16 shrink-0 border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
             {/* Time label column header */}
           </div>
-          <div className="flex flex-1">
+          <div className="flex flex-1 shrink">
             {days.map((dayIndex) => {
               const dayDate = new Date(weekStart)
               dayDate.setDate(weekStart.getDate() + dayIndex)
@@ -228,10 +228,10 @@ export function Availability({
         </div>
 
         {/* Body */}
-        <div className="flex flex-1 scrollbar-hidden">
+        <div className="flex flex-1  w-fit overflow-y-auto">
           {/* Time Labels */}
-          <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background">
-            <div className="relative h-full w-full">
+          <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background overflow-y-auto">
+            <div className="relative h-full w-full overflow-y-scroll">
               {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
                 // Render time labels every hour
                 const hour = startTime + i
@@ -251,7 +251,7 @@ export function Availability({
           </div>
 
           {/* Days Grid */}
-          <div className="flex flex-1 relative" ref={gridRef}>
+          <div className="flex flex-1 relative overflow-y-auto" ref={gridRef}>
             {/* Background Grid Lines */}
             <div className="absolute inset-0 pointer-events-none flex flex-col">
               {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map((_, i) => (

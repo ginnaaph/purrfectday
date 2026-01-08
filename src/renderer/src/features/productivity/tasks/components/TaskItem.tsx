@@ -80,7 +80,7 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
   return (
     <li className="flex items-center w-full gap-2 overflow-hidden px-3 py-2 rounded-xl shadow-sm hover:shadow-md transition-shadow mb-4">
       <div className="flex flex-col w-full">
-        <div className="flex items-start p-2 w-full gap-3 shrink-0">
+        <div className="flex flex-col items-start p-2 w-full gap-3 ">
           <Checkbox
             checked={task.isComplete}
             disabled={toggleCompleteMutation.isPending}

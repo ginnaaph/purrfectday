@@ -31,7 +31,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   // If there are NO incomplete tasks, show empty state (even if completed exists)
   if (incomplete.length === 0) {
     return (
-      <Card>
+      <Card className="py-2 items-center flex flex-col justify-center">
         <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />
         <p className="text-lg font-semibold">You are all caught up! 🐾</p>
 
@@ -56,10 +56,10 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   }
 
   return (
-    <Card>
+    <Card className="h-full min-h-0">
       <CardHeader className="text-heading mb-0">Tasks</CardHeader>
       <ProjectTabs />
-      <CardContent>
+      <CardContent className="flex-1 min-h-0 overflow-y-auto">
         <ul className="space-y-3 not-visited:ml-1 mt-0">
           {incomplete.map((task) => (
             <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
@@ -76,7 +76,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
             </button>
 
             {showCompleted && (
-              <div className="space-y-3 ml-1 overflow-y-auto">
+              <div className="space-y-3 ml-1">
                 {completed.map((task) => (
                   <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
                 ))}

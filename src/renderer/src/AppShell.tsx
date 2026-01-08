@@ -17,8 +17,9 @@ export const AppShell = ({ children }: AppShellProps) => {
 
       <SidebarTrigger />
       <SidebarInset>
-
-      <main className="ml-5 items-center">{children}</main>
+        <div className="main-content-wrapper flex-1 flex flex-col max-w-full overflow-hidden h-screen ml-3 overflow-y-auto   min-w-0 pr-7">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )
