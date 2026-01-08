@@ -17,11 +17,7 @@ import {
 
 export const AppSidebar = () => {
   return (
-    <Sidebar
-      side="left"
-      collapsible="icon"
-      className="overflow-hidden min-w-0 h-screen flex shrink-0"
-    >
+    <Sidebar side="left" collapsible="icon" className="overflow-hidden min-w-0 h-screen flex w-fit">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

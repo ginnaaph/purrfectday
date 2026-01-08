@@ -20,14 +20,14 @@ export const TasksPg = () => {
   }
 
   return (
-    <div className="h-screen w-full bg-[#f9f7f4] flex flex-row gap-4 p-3 rounded-xl overflow-hidden overflow-x-hidden">
+    <div className="h-screen w-full shrink bg-[#f9f7f4] flex flex-row gap-4 p-3 overflow-hidden">
       <div className="flex-1 p-2 flex flex-col h-full min-h-0">
         <div className="flex-1  flex shrink flex-col overflow-hidden">
           <TimeblockCalendar />
         </div>
       </div>
-      <div className="flex shrink basis-[35%] min-w-[300px] max-w-[480px] flex-col h-full min-h-0 justify-between">
-       <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden">
+      <div className="flex -full flex-col h-full justify-between overflow-hidden ">
+       <div className="flex-1  flex flex-col overflow-hidden">
           <TaskList tasks={tasks} />
         </div>
         <div className="flex flex-col items-center py-2">

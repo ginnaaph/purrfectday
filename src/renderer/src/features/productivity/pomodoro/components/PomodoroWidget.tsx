@@ -10,7 +10,7 @@ export const PomodoroWidget = () => {
   const [mode, setMode] = useState<'pomodoro' | 'stopwatch'>('pomodoro')
   const { setShowSettings } = usePomodoroStore()
   return (
-    <Card className="flex flex-col items-center p-2 px-2 w-full rounded-2xl">
+    <Card className="flex flex-col items-center p-5 w-full rounded-2xl">
       <CardContent className="gap-1 flex flex-row py-1">
         <ToggleModeBttn
           currentMode={mode}

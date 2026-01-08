@@ -78,7 +78,7 @@ export const TodaysTaskCard = ({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <h2 className="text-heading">Today</h2>
+          <h2 className="text-heading text-center">Today</h2>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
@@ -93,9 +93,9 @@ export const TodaysTaskCard = ({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="gap-2 flex flex-col">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-3 bg-lightbeige p-2 rounded-lg">
+              <div key={i} className="flex items-center gap-3 bg-primary-background p-4 rounded-lg">
                 <Skeleton className="h-4 w-4 rounded" />
                 <Skeleton className="h-4 w-40" />
               </div>
@@ -119,13 +119,13 @@ export const TodaysTaskCard = ({
               const highToday = tasks.filter((t) => t.priority === 'high' && isToday(t.dueDate))
 
               return highToday.length > 0 ? (
-                <section aria-label="High Priority Tasks">
-                  <div className="text-xl font-semibold mb-2">High Priority (Today)</div>
-                  <ul className="space-y-4">
+                <section aria-label="High Priority Tasks" className="gap-3 flex flex-col">
+                  <div className="text-xl font-bold mb-2">High Priority Tasks</div>
+                  <ul className="gap-2 flex flex-col p-1">
                     {highToday.map((task) => (
                       <li
                         key={task.id}
-                        className="flex items-center gap-3 bg-[#f5d7d7] p-2 rounded-lg"
+                        className="flex items-center gap-3 space-x-3 bg-[#f5d7d7] p-2 rounded-lg"
                       >
                         <Checkbox
                           checked={task.isComplete}
@@ -136,9 +136,7 @@ export const TodaysTaskCard = ({
                           aria-label={`Mark ${task.title} complete`}
                         />
                         <span
-                          className={
-                            task.isComplete ? 'line-through text-muted-foreground' : 'font-semibold'
-                          }
+                          className={task.isComplete ? 'line-through text-accent' : 'font-semibold'}
                         >
                           {task.title}
                         </span>
@@ -149,9 +147,9 @@ export const TodaysTaskCard = ({
               ) : null
             })()}
 
-            <section aria-label="Other Tasks">
-              <div className="text-xl font-semibold mb-2">To do</div>
-              <ul className="space-y-4">
+            <section aria-label="Other Tasks" className="gap-3 flex flex-col">
+              <div className="text-xl font-bold mb-2 pt-3">To do</div>
+              <ul className="gap-2 flex flex-col p-1">
                 {(() => {
                   const isToday = (d?: Date | null) => {
                     if (!d) return false

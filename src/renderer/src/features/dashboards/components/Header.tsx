@@ -8,7 +8,7 @@ export const Header = () => {
   return (
     <div>
       <div className="p-3">
-        <h1 className="text-heading">{greeting}</h1>
+        <h1 className="text-heading">{greeting}, Gina 🤍</h1>
         <p className="text-subheading">{formattedDate}</p>
       </div>
     </div>

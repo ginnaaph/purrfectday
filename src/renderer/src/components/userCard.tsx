@@ -10,15 +10,15 @@ import CatHead from '@/assets/images/cat/head.png'
 
 export const UserCard = () => {
   return (
-    <Item className="w-full">
+    <Item className="w-fit mt-3 mb-3 p-1">
       <ItemMedia>
-        <img src={CatHead} alt="Cat Head" className="h-15 w-15 rounded-full" />
+        <img src={CatHead} alt="Cat Head" className="h-12 w-12 rounded-full" />
       </ItemMedia>
 
       <ItemContent>
-        <ItemTitle className="text-xl font-semibold">Gi Gi</ItemTitle>
+        <ItemTitle className="text-lg font-semibold">Gi Gi</ItemTitle>
         <ItemActions>
-          <Button variant="outline" size="sm" className="mt-2">
+          <Button  size="sm" className="mt-2">
             View Profile
           </Button>
         </ItemActions>

@@ -230,7 +230,7 @@ export function Availability({
         {/* Body */}
         <div className="flex flex-1  w-fit overflow-y-auto">
           {/* Time Labels */}
-          <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background overflow-y-auto">
+          <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background overflow-y-scroll">
             <div className="relative h-full w-full overflow-y-scroll">
               {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
                 // Render time labels every hour
