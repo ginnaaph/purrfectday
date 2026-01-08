@@ -28,61 +28,62 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
     return { incomplete, completed }
   }, [tasks])
 
-  // If there are NO incomplete tasks, show empty state (even if completed exists)
-  if (incomplete.length === 0) {
-    return (
-      <Card className="py-2 items-center flex flex-col justify-center">
-        <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />
-        <p className="text-lg font-semibold">You are all caught up! 🐾</p>
-
-        {completed.length > 0 && (
-          <button
-            onClick={() => setShowCompleted((prev) => !prev)}
-            className="mt-4 text-md text-[#6a5555] font-semibold underline"
-          >
-            {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
-          </button>
-        )}
-
-        {showCompleted && (
-          <div className="mt-4 w-full px-2 space-y-2 overflow-y-auto">
-            {completed.map((task) => (
-              <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
-            ))}
-          </div>
-        )}
-      </Card>
-    )
-  }
-
   return (
     <Card className="h-full min-h-0">
       <CardHeader className="text-heading font-bold">Tasks</CardHeader>
-      
-      <CardContent className="flex-1 min-h-0 overflow-y-auto">
-        <ul className="space-y-3 not-visited:ml-1 mt-0">
-          {incomplete.map((task) => (
-            <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
-          ))}
-        </ul>
 
-        {completed.length > 0 && (
-          <div className="pt-8 mt-2 py-5 ml-2">
-            <button
-              onClick={() => setShowCompleted((prev) => !prev)}
-              className="text-md text-[#6a5555] font-semibold underline mb-1"
-            >
-              {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
-            </button>
+      <ProjectTabs />
+
+      <CardContent className="flex-1 min-h-0 overflow-y-auto">
+        {incomplete.length === 0 ? (
+          <div className="py-2 items-center flex flex-col justify-center">
+            <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />
+            <p className="text-lg font-semibold">You are all caught up! 🐾</p>
+
+            {completed.length > 0 && (
+              <button
+                onClick={() => setShowCompleted((prev) => !prev)}
+                className="mt-4 text-md text-[#6a5555] font-semibold underline"
+              >
+                {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
+              </button>
+            )}
 
             {showCompleted && (
-              <div className="space-y-3 ml-1">
+              <div className="mt-4 w-full px-2 space-y-2 overflow-y-auto">
                 {completed.map((task) => (
                   <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
                 ))}
               </div>
             )}
           </div>
+        ) : (
+          <>
+            <ul className="space-y-3 not-visited:ml-1 mt-0">
+              {incomplete.map((task) => (
+                <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
+              ))}
+            </ul>
+
+            {completed.length > 0 && (
+              <div className="pt-5 mt-2 py-5 ml-2">
+                <button
+                  onClick={() => setShowCompleted((prev) => !prev)}
+                  className="text-md text-[#6a5555] font-semibold underline mb-1"
+                >
+                  {showCompleted ? 'Hide' : 'Show'} Completed ({completed.length})
+                </button>
+
+                {showCompleted && (
+                  <div className="space-y-3 ml-0.5">
+                    {completed.map((task) => (
+                      <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {/* Mount the task details dialog once for this list */}

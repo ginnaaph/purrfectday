@@ -78,9 +78,9 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
   const isOverdue = Boolean(taskDate && taskDate < today && !isDueToday && !task.isComplete)
 
   return (
-    <li className="flex items-baseline w-full gap-2 overflow-hidden px-3 py-2 rounded-xl shadow-sm hover:shadow-md transition-shadow mb-4">
+    <li className="flex items-baseline w-full gap-2 overflow-hidden px-3 py-1 rounded-lg shadow-sm hover:shadow-md transition-shadow ">
       <div className="flex flex-col w-full items-baseline ">
-        <div className="flex items-baseline py-3 gap-3 ">
+        <div className="flex items-baseline py-3 gap-3 w-full">
           <Checkbox
             className="items-baseline mt-7"
             checked={task.isComplete}

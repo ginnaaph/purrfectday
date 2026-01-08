@@ -148,7 +148,7 @@ export const TodaysTaskCard = ({
             })()}
 
             <section aria-label="Other Tasks" className="gap-3 flex flex-col">
-              <div className="text-xl font-bold mb-2 pt-3">To do</div>
+              <div className="text-xl font-bold mb-2 pt-3 overflow-y-auto">To do</div>
               <ul className="gap-2 flex flex-col p-1">
                 {(() => {
                   const isToday = (d?: Date | null) => {

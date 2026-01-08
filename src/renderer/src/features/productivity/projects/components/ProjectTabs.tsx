@@ -1,22 +1,21 @@
 import { useProjectStore } from '../store/useProjectStore'
 import { AddProjectModal } from './AddProjecModal'
-import { useState, useMemo, useRef, use } from 'react'
-import { getAllProjects } from '../api/getAllProjects.api'
-import { queryClient } from '@/libs/QueryClient'
+import { useState, useMemo, useRef } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { Tabs, TabsList, TabsTrigger } from '@/components/tabs/ui/tabs'
+import { getAllProjects } from '../api/getAllProjects.api'
 import { insertProject } from '../api/insertProject.api'
+import { queryClient } from '@/libs/QueryClient'
 
 export const ProjectTabs = () => {
   const query = useQuery({
     queryKey: ['projects'],
     queryFn: getAllProjects
   })
-
   const projects = useMemo(() => query.data ?? [], [query.data])
   const activeProjectId = useProjectStore((s) => s.activeProjectId)
   const setActiveProjectId = useProjectStore((s) => s.setActiveProjectId)
 
+  // React Query is source of truth for projects
   const [showModal, setShowModal] = useState(false)
   const [contextMenu, setContextMenu] = useState<{
     x: number
@@ -42,34 +41,116 @@ export const ProjectTabs = () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] })
     }
   })
+
   return (
     <>
-      <Tabs
-        className="overflow-x-auto"
-        value={activeProjectId ? activeProjectId.toString() : 'all'}
-        onValueChange={(value) => {
-          const id = value === 'all' ? null : parseInt(value, 10)
-          setActiveProjectId(id)
-        }}
-      >
-        <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          {projects.map((project) => (
-            <TabsTrigger key={project.id} value={project.id.toString()}>
-              {project.name}
-            </TabsTrigger>
-          ))}
-          <TabsTrigger onClick={() => setShowModal(true)} value="add">
-            +
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="flex gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-xl px-1 scrollbar-hide">
+        <button
+          onClick={() => setShowModal(true)}
+          className="px-2 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition"
+        >
+          + New Project
+        </button>
+        {projects.map((project) => (
+          <span key={project.id} style={{ position: 'relative' }}>
+            {editingProjectId === project.id ? (
+              <input
+                className="px-2 py-1 rounded-lg border  text-sm"
+                value={editName}
+                autoFocus
+                onChange={(e) => setEditName(e.target.value)}
+                onBlur={() => setEditingProjectId(null)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    import('../api/updateProject.api').then(({ updateProject }) => {
+                      updateProject(project.id, { name: editName }).then(() => {
+                        queryClient.invalidateQueries({ queryKey: ['projects'] })
+                        setEditingProjectId(null)
+                      })
+                    })
+                  } else if (e.key === 'Escape') {
+                    setEditingProjectId(null)
+                  }
+                }}
+                style={{ width: 90 }}
+              />
+            ) : (
+              <button
+                onClick={() => {
+                  if (project.id === activeProjectId) {
+                    setActiveProjectId(null)
+                  } else {
+                    setActiveProjectId(project.id)
+                  }
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault()
+                  setContextMenu({ x: e.clientX, y: e.clientY, projectId: project.id })
+                  setEditName(project.name)
+                }}
+                className={`px-4 py-1 rounded-lg shadow-sm transition text-sm ${
+                  project.id === activeProjectId
+                    ? 'bg-secondary-background font-semibold rounded-lg'
+                    : 'bg-white hover:bg-primary-alt/50'
+                }`}
+              >
+                {project.name}
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <div
+          ref={contextMenuRef}
+          style={{
+            position: 'fixed',
+            top: contextMenu.y,
+            left: contextMenu.x,
+            zIndex: 1000,
+            background: 'white',
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            minWidth: 120
+          }}
+          onMouseLeave={() => setContextMenu(null)}
+        >
+          <button
+            className="block w-full text-left px-4 py-2 hover:bg-[#f5ebe0]"
+            onClick={() => {
+              setEditingProjectId(contextMenu.projectId)
+              setContextMenu(null)
+            }}
+          >
+            Edit Name
+          </button>
+          <button
+            className="block w-full text-left px-4 py-2 hover:bg-red-100"
+            onClick={() => {
+              if (contextMenu.projectId) {
+                const confirmed = window.confirm(
+                  'Are you sure you want to delete this project? This cannot be undone.'
+                )
+                if (confirmed) {
+                  deleteMutation.mutate(contextMenu.projectId)
+                }
+              }
+              setContextMenu(null)
+            }}
+          >
+            Delete Project
+          </button>
+        </div>
+      )}
 
       <AddProjectModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onAdd={async (name: string) => {
-          await mutation.mutateAsync(name)
+        onAdd={(newName) => {
+          mutation.mutate(newName)
         }}
       />
     </>

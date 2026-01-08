@@ -21,18 +21,18 @@ export const AddProjectModal = ({ isOpen, onClose, onAdd }: AddProjectModalProps
   }
   if (!isOpen) return null
   return (
-    <Card>
+    <Card className="z-50"> 
       <CardHeader>
         <CardTitle>Add New Project</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-4">
         <Input
           type="text"
           placeholder="Project Name"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
         />
-        <div className="mt-4 flex justify-end space-x-2">
+        <div className="mt-4 flex justify-end gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
