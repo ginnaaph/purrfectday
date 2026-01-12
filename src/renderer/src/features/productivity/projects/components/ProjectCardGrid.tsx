@@ -1,6 +1,5 @@
 import Folder from '@/assets/images/icons/folder.png'
-import Trash from '@/assets/images/icons/trash.png'
-import FountainPen from '@/assets/images/icons/fountainPen.png'
+import { Trash, PenBoxIcon } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -46,13 +45,11 @@ export const ProjectCardGrid = ({
         const progressValue = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100)
 
         return (
-          <Card key={project.id} className="h-full min-h-[360px]">
-            <CardHeader className="text-left items-start gap-3">
-              <div className="flex w-full items-start justify-between gap-3">
+          <Card key={project.id} className="h-full min-h-90 gap-4">
+            <CardHeader>
+              <div className="flex w-full justify-between gap-3">
                 <div>
-                  <CardTitle className="text-lg font-semibold text-primary">
-                    {project.name}
-                  </CardTitle>
+                  <CardTitle>{project.name}</CardTitle>
                   <CardDescription className="mt-1">
                     {completedCount} of {totalCount} tasks complete
                   </CardDescription>
@@ -66,7 +63,7 @@ export const ProjectCardGrid = ({
                     onClick={() => onEditProject?.(project)}
                     disabled={!onEditProject}
                   >
-                    <img src={FountainPen} alt="Edit" className="h-4 w-4" />
+                    <PenBoxIcon className="h-5 w-5" />
                   </button>
                   <button
                     type="button"
@@ -75,28 +72,28 @@ export const ProjectCardGrid = ({
                     onClick={() => onDeleteProject?.(project)}
                     disabled={!onDeleteProject}
                   >
-                    <img src={Trash} alt="Delete" className="h-4 w-4" />
+                    <Trash className="h-5 w-5" />
                   </button>
                 </div>
               </div>
 
-              <div className="w-full space-y-2">
+              <div className="w-full py-3">
                 <div className="flex items-center justify-between text-xs text-text-secondary">
                   <span>Progress</span>
                   <span>{progressValue}%</span>
                 </div>
-                <Progress value={progressValue} className="h-2 bg-[#f1e7dc]" />
+                <Progress value={progressValue} className="h-2 bg-white" />
               </div>
             </CardHeader>
 
             <CardContent className="flex-1 min-h-0 max-h-64 overflow-y-auto">
               {projectTasks.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-3 py-6 text-center">
+                <div className="flex flex-col items-center justify-center gap-3  text-center">
                   <img src={Folder} alt="No tasks" className="h-10 w-10 opacity-70" />
                   <p className="text-sm text-text-secondary">No tasks for this project yet.</p>
                 </div>
               ) : (
-                <ul className="space-y-3">
+                <ul>
                   {projectTasks.map((task) => (
                     <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
                   ))}

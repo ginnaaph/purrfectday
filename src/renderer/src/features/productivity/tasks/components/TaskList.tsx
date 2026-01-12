@@ -29,12 +29,12 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   }, [tasks])
 
   return (
-    <Card className="h-full min-h-0">
+    <Card className="h-full min-h-0 flex flex-col">
       <CardHeader className="text-heading font-bold">Tasks</CardHeader>
 
       <ProjectTabs />
 
-      <CardContent className="flex-1 min-h-0 overflow-y-auto">
+      <CardContent className="flex-1 min-h-0  gap-2 overflow-y-auto">
         {incomplete.length === 0 ? (
           <div className="py-2 items-center flex flex-col justify-center">
             <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />
@@ -59,7 +59,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
           </div>
         ) : (
           <>
-            <ul className="space-y-3 not-visited:ml-1 mt-0">
+            <ul className="space-y-5 gap-4 not-visited:ml-1 mt-0">
               {incomplete.map((task) => (
                 <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
               ))}
@@ -75,7 +75,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
                 </button>
 
                 {showCompleted && (
-                  <div className="space-y-3 ml-0.5">
+                  <div className="space-y-5 ml-0.5">
                     {completed.map((task) => (
                       <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
                     ))}

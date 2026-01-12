@@ -59,14 +59,14 @@ const formatDisplayTime = (time: string, useAmPm: boolean) => {
 const generateId = () => Math.random().toString(36).substring(2, 11)
 
 // Sunday-first to match Date.getDay() (0 = Sunday)
-const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 
 // --- Components ---
 
 export function Availability({
   value = [],
   onValueChange,
-  days = [0, 1, 2, 3, 4, 5, 6],
+  days = [1, 2, 3, 4, 5, 6, 0],
   timeIncrements = 30,
   startTime = 7,
   endTime = 23,
@@ -95,7 +95,9 @@ export function Availability({
     const d = new Date(currentDate)
     d.setHours(0, 0, 0, 0)
     const dow = d.getDay() // 0-6 (Sun-Sat)
-    d.setDate(d.getDate() - dow)
+    // Adjust to Monday start: if dow is 0 (Sunday), go back 6 days; otherwise go back dow-1 days
+    const offset = dow === 0 ? 6 : dow - 1
+    d.setDate(d.getDate() - offset)
     return d
   }, [currentDate])
 
@@ -204,34 +206,38 @@ export function Availability({
         ref={containerRef}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex w-full border-b border-primary-alt/15 bg-secondary-background">
-          <div className="w-16 shrink-0 border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
+        <div
+          className="sticky top-0 z-10 grid w-full border-b border-primary-alt/15 bg-secondary-background"
+          style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))` }}
+        >
+          <div className="border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
             {/* Time label column header */}
           </div>
-          <div className="flex flex-1 shrink">
-            {days.map((dayIndex) => {
-              const dayDate = new Date(weekStart)
-              dayDate.setDate(weekStart.getDate() + dayIndex)
-              return (
-                <div
-                  key={dayIndex}
-                  className="flex-1 min-w-25 border-r border-primary-alt/15 px-2 py-2 text-center text-md font-bold text-primary-alt last:border-r-0"
-                >
-                  <div className="leading-tight">{DAYS[dayIndex]}</div>
-                  <div className="text-xs font-medium text-primary-alt/80">
-                    {dayDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                  </div>
+          {days.map((dayIndex, i) => {
+            const dayDate = new Date(weekStart)
+            dayDate.setDate(weekStart.getDate() + i)
+            return (
+              <div
+                key={dayIndex}
+                className="border-r border-primary-alt/15 px-2 py-2 text-center text-md font-bold text-primary-alt last:border-r-0"
+              >
+                <div className="leading-tight">{DAYS[dayIndex]}</div>
+                <div className="text-xs font-medium text-primary-alt/80">
+                  {dayDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Body */}
-        <div className="flex flex-1  w-fit overflow-y-auto">
+        <div
+          className="grid flex-1 overflow-hidden"
+          style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))` }}
+        >
           {/* Time Labels */}
-          <div className="w-16 shrink border-r border-primary-alt/15 bg-primary-background overflow-y-auto">
-            <div className="relative h-full w-full overflow-y-auto">
+          <div className="border-r border-primary-alt/15 bg-primary-background overflow-y-auto">
+            <div className="relative h-full w-full">
               {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
                 // Render time labels every hour
                 const hour = startTime + i
@@ -250,34 +256,48 @@ export function Availability({
             </div>
           </div>
 
-          {/* Days Grid */}
-          <div className="flex flex-1 relative overflow-y-auto" ref={gridRef}>
-            {/* Background Grid Lines */}
-            <div className="absolute inset-0 pointer-events-none flex flex-col">
-              {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 border-b border-primary-alt/15 border-dashed w-full"
+          {/* Days Grid Container - wraps all day columns with shared scrolling */}
+          <div
+            className="relative overflow-y-auto"
+            style={{ gridColumn: `2 / span ${days.length}` }}
+          >
+            <div
+              className="grid h-full"
+              style={{ gridTemplateColumns: `repeat(${days.length}, minmax(100px, 1fr))` }}
+              ref={gridRef}
+            >
+              {/* Background Grid Lines */}
+              <div
+                className="absolute inset-0 pointer-events-none flex flex-col"
+                style={{ gridColumn: `1 / span ${days.length}` }}
+              >
+                {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map(
+                  (_, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 border-b border-primary-alt/15 border-dashed w-full"
+                    />
+                  )
+                )}
+              </div>
+
+              {days.map((dayIndex, i) => (
+                <DayColumn
+                  key={dayIndex}
+                  id={`day-${i}`}
+                  colIndex={i}
+                  startTime={startTime}
+                  endTime={endTime}
+                  timeIncrements={timeIncrements}
+                  events={internalValue.filter((e) => e.week_day === dayIndex)}
+                  onCreate={handleCreate}
+                  onResize={handleResize}
+                  onDelete={handleDelete}
+                  useAmPm={useAmPm}
+                  isOverlay={false}
                 />
               ))}
             </div>
-
-            {days.map((dayIndex, i) => (
-              <DayColumn
-                key={dayIndex}
-                id={`day-${i}`}
-                colIndex={i}
-                startTime={startTime}
-                endTime={endTime}
-                timeIncrements={timeIncrements}
-                events={internalValue.filter((e) => e.week_day === dayIndex)}
-                onCreate={handleCreate}
-                onResize={handleResize}
-                onDelete={handleDelete}
-                useAmPm={useAmPm}
-                isOverlay={false}
-              />
-            ))}
           </div>
         </div>
       </div>
@@ -382,7 +402,7 @@ function DayColumn({
         // @ts-ignore
         containerRef.current = node
       }}
-      className="flex-1 relative border-r border-primary-alt/15 last:border-r-0 min-w-25"
+      className="relative border-r border-primary-alt/15 last:border-r-0 h-full"
       onMouseDown={handleMouseDown}
     >
       {events.map((event) => (

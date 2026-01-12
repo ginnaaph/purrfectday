@@ -11,7 +11,7 @@ export function TaskDashboardLayout({
   pomodoroWidget
 }: TaskDashboardLayoutProps) {
   return (
-    <div className="h-screen w-full bg-[#f9f7f4] flex flex-row gap-6 px-3 py-4 mr-3 ml-3 rounded-xl overflow-hidden">
+    <div className="h-screen w-full bg-white flex flex-row gap-6 pr-4 px-3 py-4  pl-3 rounded-xl overflow-hidden">
       {/* Main (2/3): Calendar*/}
       <div className="w-2/3 flex flex-col h-full min-h-0">
         <div className="flex-1 min-h-0 flex flex-col border-white overflow-hidden">{timeblock}</div>

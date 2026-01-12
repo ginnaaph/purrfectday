@@ -36,15 +36,15 @@ export const ProjectPg = () => {
     }
   })
   return (
-    <div className="space-y-6 bg-paleyellow p-6 min-h-full ml-4 mr-4 rounded-xl overflow-y-scroll">
-      <div className="bg-off-white text-brown tracking-wider p-4 rounded-xl text-center">
+    <div className=" bg-white p-6 min-h-full ml-4  rounded-xl overflow-y-scroll">
+      <div className="bg-secondary-background text-primary-alt py-2  rounded-xl text-center">
         <h1>Project Manager</h1>
       </div>
       {/* Modal and content start here */}
-      <div className="flex gap-2 mb-4  overflow-y-auto">
+      <div className="flex overflow-y-auto py-4">
         <button
           onClick={() => setShowModal(true)}
-          className="px-6 py-1  text-center shadow-sm rounded-full bg-muted-purple text-brown font-lg"
+          className="px-6 py-1  text-center shadow-sm rounded-full bg-primary-alt text-white font-lg"
         >
           + New Project
         </button>
