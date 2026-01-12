@@ -49,6 +49,8 @@
     "framer-motion": "^12.23.26",
     "immer": "^11.1.0",
     "lucide-react": "^0.562.0",
+    "motion": "^12.26.1",
+    "radix-ui": "^1.4.3",
     "react-cookie": "^8.0.1",
     "react-day-picker": "^9.13.0",
     "react-hook-form": "^7.69.0",

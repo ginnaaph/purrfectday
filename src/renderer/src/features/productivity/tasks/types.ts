@@ -30,4 +30,10 @@ export type Project = {
   id: number
   name: string
   icon?: string
+  description?: string
+  color?: string
+  startDate?: Date | null
+  endDate?: Date | null
+  taskCount: number
+  dueDate?: Date | null
 }

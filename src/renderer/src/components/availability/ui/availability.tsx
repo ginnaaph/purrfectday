@@ -198,7 +198,7 @@ export function Availability({
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div
         className={cn(
-          'flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none',
+          'flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md border border-primary-alt/20 bg-primary-background text-primary-alt select-none shrink',
           className
         )}
         ref={containerRef}
@@ -230,8 +230,8 @@ export function Availability({
         {/* Body */}
         <div className="flex flex-1  w-fit overflow-y-auto">
           {/* Time Labels */}
-          <div className="w-16 shrink-0 border-r border-primary-alt/15 bg-secondary-background overflow-y-scroll">
-            <div className="relative h-full w-full overflow-y-scroll">
+          <div className="w-16 shrink border-r border-primary-alt/15 bg-primary-background overflow-y-auto">
+            <div className="relative h-full w-full overflow-y-auto">
               {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
                 // Render time labels every hour
                 const hour = startTime + i
@@ -240,7 +240,7 @@ export function Availability({
                 return (
                   <div
                     key={hour}
-                    className="absolute right-2 -translate-y-1/2 text-xs text-primary-alt/70"
+                    className="absolute right-2 -translate-y-1/2 text-xs text-primary-alt"
                     style={{ top: `${top}%` }}
                   >
                     {formatDisplayTime(`${hour}:00`, useAmPm)}

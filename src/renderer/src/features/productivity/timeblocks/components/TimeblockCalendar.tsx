@@ -54,30 +54,35 @@ export function TimeblockCalendar() {
   }, [currentDate, view])
 
   return (
-    <div className="flex flex-col gap-3 h-full p-3 min-h-0">
+    <div className="flex flex-col gap-3 h-full p-3 min-h-0 shrink">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={prev}>
+          <Button size="sm" onClick={prev}>
             Prev
           </Button>
-          <Button variant="outline" onClick={goToday}>
+          <Button size="sm" onClick={goToday}>
             Today
           </Button>
-          <Button variant="outline" onClick={next}>
+          <Button size="sm" onClick={next}>
             Next
           </Button>
         </div>
-        <div className="text-sm font-semibold">{label}</div>
+        <div className="text-heading ">{label}</div>
         <div className="flex items-center gap-2">
           <Button
+            size="sm"
             variant={view === 'day' ? 'default' : 'outline'}
             onClick={() => setView('day')}
             className={cn('')}
           >
             Day
           </Button>
-          <Button variant={view === 'week' ? 'default' : 'outline'} onClick={() => setView('week')}>
+          <Button
+            size="sm"
+            variant={view === 'week' ? 'default' : 'outline'}
+            onClick={() => setView('week')}
+          >
             Week
           </Button>
         </div>

@@ -3,6 +3,7 @@ import { TodaysTaskCard } from '../today/components/TodaysTasks'
 import { getAllTasks } from '@/features/productivity/tasks/api/getAllTasks'
 import { useQuery } from '@tanstack/react-query'
 import { getTodaysTaskList } from '../today/utils/isTaskForToday'
+import { PetDashboardCard } from '@/features/cat/components/PetDashboardCard'
 // Skeleton handled within TodaysTaskCard
 export const TodayPg = () => {
   const query = useQuery({
@@ -18,7 +19,7 @@ export const TodayPg = () => {
       <div className="flex flex-col lg:flex-row gap-1 h-full space-x-4 lg:space-y-0 mt-1 shrink">
         <div className="flex-1 h-full overflow-auto space-y-3">
           <section className="p-3 w-full shrink">
-            <div>Pet card goes here</div>
+            <PetDashboardCard />
           </section>
         </div>
         <div className="flex-1 space-y-3 h-full overflow-y-auto  shrink">
