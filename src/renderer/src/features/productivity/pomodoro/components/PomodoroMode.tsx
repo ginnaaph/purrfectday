@@ -28,7 +28,7 @@ const PomodoroMode = ({ onSwitchToStopwatch }: PomodoroModeProps) => {
       const parsed = Number(saved)
       setActiveTaskId(Number.isFinite(parsed) ? parsed : null)
     }
-  }, [])
+  }, [setActiveTaskId])
 
   useEffect(() => {
     if (activeTaskId) {
@@ -71,6 +71,12 @@ const PomodoroMode = ({ onSwitchToStopwatch }: PomodoroModeProps) => {
         >
           End
         </Button>
+
+        {onSwitchToStopwatch && (
+          <Button onClick={onSwitchToStopwatch} variant="ghost">
+            Switch to Stopwatch
+          </Button>
+        )}
       </div>
     </div>
   )
