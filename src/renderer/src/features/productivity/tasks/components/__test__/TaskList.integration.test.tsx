@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from '@/libs/QueryClient'
+import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { getAllProjects } from '@/features/productivity/projects/api/getAllProjects.api'
 
 import { TaskList } from '../TaskList'
 
@@ -28,8 +29,16 @@ vi.mock('../../hooks/useTaskDetailData', () => {
   }
 })
 
+vi.mock('@/features/productivity/projects/api/getAllProjects.api', () => ({
+  getAllProjects: vi.fn()
+}))
+
 describe('TaskList + TaskDetails integration', () => {
   it('opens dialog on title click and submits updates', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } }
+    })
+    vi.mocked(getAllProjects).mockResolvedValue([])
     const tasks = [
       {
         id: 101,
@@ -42,17 +51,20 @@ describe('TaskList + TaskDetails integration', () => {
     ]
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <TaskList tasks={tasks} />
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <TaskList tasks={tasks} />
+        </QueryClientProvider>
+      </MemoryRouter>
     )
 
     // Click the task title button rendered by TaskItem
     const titleButton = screen.getByRole('button', { name: /write integrations/i })
     await userEvent.click(titleButton)
 
-    // Dialog should appear
-    expect(screen.getByText('Edit Task')).toBeInTheDocument()
+    // Enter edit mode
+    const editButton = screen.getByRole('button', { name: /edit/i })
+    await userEvent.click(editButton)
 
     // The Title input should be prefilled with the task title from the mocked hook
     const titleInput = await screen.findByLabelText('Title')

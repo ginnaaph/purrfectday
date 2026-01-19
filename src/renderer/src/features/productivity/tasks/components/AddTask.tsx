@@ -15,12 +15,20 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { Label } from '@/components/label/ui/label'
 import { ChevronDownIcon } from 'lucide-react'
+import { ProjectComboBox } from '@/features/productivity/projects/components/ProjectComboBox'
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   tags: z.string().optional(),
-  estimatedPomodoros: z.number().nullable().optional()
+  estimatedPomodoros: z.number().nullable().optional(),
+  project: z
+    .object({
+      label: z.string(),
+      value: z.number()
+    })
+    .nullable()
+    .optional()
 })
 
 type AddTaskFormInput = z.infer<typeof schema>
@@ -40,8 +48,14 @@ export const AddTask = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting }
-  } = useForm<AddTaskFormInput>({ resolver: zodResolver(schema) })
+  } = useForm<AddTaskFormInput>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      project: null
+    }
+  })
 
   const onSubmit = async (data: AddTaskFormInput) => {
     const rawTags = (data.tags ?? '')
@@ -69,6 +83,7 @@ export const AddTask = () => {
       tags: rawTags,
       isComplete: false,
       estimatedPomodoros: data.estimatedPomodoros ?? null,
+      project_id: data.project?.value ?? null,
       dueDate: combinedDue
     }
 
@@ -109,6 +124,15 @@ export const AddTask = () => {
                 placeholder="Optional description"
                 {...register('description')}
               />
+            </FormControl>
+          </FormItem>
+
+          <FormItem>
+            <FormLabel className="text-md pb-2" htmlFor="project">
+              Project
+            </FormLabel>
+            <FormControl>
+              <ProjectComboBox control={control} name="project" />
             </FormControl>
           </FormItem>
 

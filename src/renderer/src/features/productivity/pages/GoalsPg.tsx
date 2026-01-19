@@ -1,7 +1,5 @@
-export const GoalsPg = () => {
-  return (
-    <div className="w-full overflow-hidden flex-col flex">
-      <div className="p-3">Goals Page Content</div>
-    </div>
-  )
+import { GoalsView, type GoalsViewProps } from '../goals/components/GoalsView'
+
+export const GoalsPg = (props: GoalsViewProps) => {
+  return <GoalsView {...props} />
 }

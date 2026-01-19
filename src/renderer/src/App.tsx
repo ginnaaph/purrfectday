@@ -6,7 +6,7 @@ import { TodayPg } from './features/dashboards/pages/TodayPg'
 import { TasksPg } from './features/productivity/pages/TasksPg'
 import { ProjectPg } from './features/productivity/pages/ProjectPg'
 import { PomodoroPg } from './features/productivity/pages/PomodoroPg'
-import { GoalsPg } from './features/productivity/pages/GoalsPg'
+import { GoalsPgContainer } from './features/productivity/goals/pages/GoalsPgContainer'
 import { OverviewPg } from './features/dashboards/pages/OverviewPg'
 import { JournalPg } from './features/recharge/journal/pages/JournalPg'
 
@@ -22,7 +22,7 @@ const App = () => {
             <Route path="/tasks" element={<TasksPg />} />
             <Route path="/projects" element={<ProjectPg />} />
             <Route path="/pomodoro" element={<PomodoroPg />} />
-            <Route path="/goals" element={<GoalsPg />} />
+            <Route path="/goals" element={<GoalsPgContainer />} />
             <Route path="/overview" element={<OverviewPg />} />
           </Routes>
         </AppShell>

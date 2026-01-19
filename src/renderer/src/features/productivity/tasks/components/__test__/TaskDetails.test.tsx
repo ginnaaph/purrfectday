@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { TaskDetails } from '../TaskDetails'
 import { useTaskModalStore } from '../../store/useTaskModalStore'
+import { getAllProjects } from '@/features/productivity/projects/api/getAllProjects.api'
 
 // Mock the data hook used inside TaskDetails
 const mutateSpy = vi.fn()
@@ -27,15 +29,30 @@ vi.mock('../../hooks/useTaskDetailData', () => {
   }
 })
 
+vi.mock('@/features/productivity/projects/api/getAllProjects.api', () => ({
+  getAllProjects: vi.fn()
+}))
+
 describe('TaskDetails dialog', () => {
   beforeEach(() => {
     mutateSpy.mockClear()
+    vi.mocked(getAllProjects).mockResolvedValue([])
     // Ensure the modal is open with the task id
     useTaskModalStore.getState().open(101)
   })
 
   it('renders initial task values and submits updates', async () => {
-    render(<TaskDetails taskId={101} />)
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } }
+    })
+    render(
+      <QueryClientProvider client={queryClient}>
+        <TaskDetails taskId={101} />
+      </QueryClientProvider>
+    )
+
+    const editButton = screen.getByRole('button', { name: /edit/i })
+    await userEvent.click(editButton)
 
     // Title field populated
     const titleInput = await screen.findByLabelText('Title')
@@ -79,8 +96,11 @@ describe('TaskDetails dialog', () => {
       description: 'Draft the blog about cats',
       priority: 'high',
       tags: 'work, urgent',
-      estimated_pomodoros: 2,
-      dueDate: new Date('2026-01-10')
+      estimated_pomodoros: 2
     })
+    expect(arg.updates.dueDate).toBeInstanceOf(Date)
+    expect(arg.updates.dueDate?.getFullYear()).toBe(2026)
+    expect(arg.updates.dueDate?.getMonth()).toBe(0)
+    expect(arg.updates.dueDate?.getDate()).toBe(10)
   })
 })

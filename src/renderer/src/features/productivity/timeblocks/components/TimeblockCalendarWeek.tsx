@@ -10,7 +10,7 @@ export function TimeblockCalendarWeek() {
       value={spans}
       onValueChange={updateFromSpans}
       timeIncrements={30}
-      startTime={7}
+      startTime={4}
       endTime={23}
       className="h-full min-h-0"
     />

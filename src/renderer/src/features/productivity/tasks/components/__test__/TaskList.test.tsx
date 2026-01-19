@@ -12,6 +12,11 @@ vi.mock('../TaskDetails', () => ({
   TaskDetails: () => null
 }))
 
+// Stub ProjectTabs to avoid React Query usage in sidebar tabs
+vi.mock('../../../projects/components/ProjectTabs', () => ({
+  ProjectTabs: () => null
+}))
+
 const makeTask = (id: number, overrides: Partial<any> = {}) => ({
   id,
   title: `Task ${id}`,

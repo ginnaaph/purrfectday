@@ -56,35 +56,37 @@ export function TimeblockCalendar() {
   return (
     <div className="flex flex-col gap-3 h-full p-3 min-h-0 shrink">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button size="sm" onClick={prev}>
-            Prev
-          </Button>
-          <Button size="sm" onClick={goToday}>
-            Today
-          </Button>
-          <Button size="sm" onClick={next}>
-            Next
-          </Button>
-        </div>
-        <div className="text-heading ">{label}</div>
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant={view === 'day' ? 'default' : 'outline'}
-            onClick={() => setView('day')}
-            className={cn('')}
-          >
-            Day
-          </Button>
-          <Button
-            size="sm"
-            variant={view === 'week' ? 'default' : 'outline'}
-            onClick={() => setView('week')}
-          >
-            Week
-          </Button>
+      <div className="flex flex-col gap-2">
+        <div className="text-heading">{label}</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={prev}>
+              Prev
+            </Button>
+            <Button size="sm" onClick={goToday}>
+              Today
+            </Button>
+            <Button size="sm" onClick={next}>
+              Next
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant={view === 'day' ? 'default' : 'outline'}
+              onClick={() => setView('day')}
+              className={cn('')}
+            >
+              Day
+            </Button>
+            <Button
+              size="sm"
+              variant={view === 'week' ? 'default' : 'outline'}
+              onClick={() => setView('week')}
+            >
+              Week
+            </Button>
+          </div>
         </div>
       </div>
 

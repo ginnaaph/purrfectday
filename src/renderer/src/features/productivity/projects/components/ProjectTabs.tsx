@@ -47,7 +47,7 @@ export const ProjectTabs = () => {
       <div className="flex gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-xl px-1 scrollbar-hide">
         <button
           onClick={() => setShowModal(true)}
-          className="px-2 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition"
+          className="px-4 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition"
         >
           + New Project
         </button>

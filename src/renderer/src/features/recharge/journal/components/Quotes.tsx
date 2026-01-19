@@ -10,6 +10,7 @@ export default function Quotes() {
   const [error, setError] = useState<string | null>(null)
   const [lastFetchAt, setLastFetchAt] = useState<number>(0)
   const COOLDOWN_MS = 60000 // 1 minute cooldown
+  const isCoolingDown = Date.now() - lastFetchAt < COOLDOWN_MS
 
   const load = useCallback(async () => {
     const now = Date.now()
@@ -18,12 +19,12 @@ export default function Quotes() {
     }
     setLoading(true)
     setError(null)
-    const data = await fetchInspirationalQuotes()
-    if (data && data.length > 0) {
-      const { q, a } = data[0]
+    const result = await fetchInspirationalQuotes()
+    if (result.data && result.data.length > 0) {
+      const { q, a } = result.data[0]
       setQuote({ q, a })
     } else {
-      setError('No quote available')
+      setError(result.error ?? 'Failed to load quote from API.')
       setQuote(null)
     }
     setLoading(false)
@@ -48,7 +49,7 @@ export default function Quotes() {
       <div className="mt-1 text-right mr-5">
         <button
           onClick={load}
-          disabled={loading || lastFetchAt < COOLDOWN_MS}
+          disabled={loading || isCoolingDown}
           className="px-2 py-1 text-xs rounded-lg bg-white  border-green text-green shadow disabled:opacity-50"
         >
           <RefreshCcw className="inline-block mr-1 mb-0.5" />

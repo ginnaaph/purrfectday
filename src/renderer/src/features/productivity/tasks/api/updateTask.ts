@@ -3,6 +3,21 @@ import { supabase } from '@/libs/supabaseClient'
 import type { Task } from '@/features/productivity/tasks/types'
 import { TaskApiUpdateInput } from '@/features/productivity/tasks/types'
 
+const mapTaskRecord = (record: any): Task => ({
+  id: record.id,
+  title: record.title,
+  description: record.description,
+  dueDate: record.due_date ? new Date(record.due_date) : null,
+  project_id: record.project_id ?? record.list_id ?? null,
+  priority: record.priority ?? null,
+  estimatedPomodoros: record.estimated_pomodoros ?? 0,
+  pomodorosCompleted: record.pomodoros_completed ?? 0,
+  isComplete: record.is_complete ?? false,
+  completedAt: record.completed_at ? new Date(record.completed_at) : null,
+  tags: record.tags ?? [],
+  earnedCoins: record.earned_coins ?? 0
+})
+
 export const updateTask = async (
   selectedTaskId: number,
   updates: Partial<TaskApiUpdateInput>
@@ -65,5 +80,7 @@ export const updateTask = async (
     console.error('❌ Supabase update error:', error)
   }
 
-  return { data, error }
+  const mapped = data ? data.map(mapTaskRecord) : null
+
+  return { data: mapped, error }
 }

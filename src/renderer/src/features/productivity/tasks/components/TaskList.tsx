@@ -4,7 +4,7 @@ import { TaskDetails } from './TaskDetails'
 import { useTaskModalStore } from '../store/useTaskModalStore'
 import type { Task } from '../types'
 import sleepingcat from '@/assets/images/cat/sleep.png'
-import { Card, CardContent, CardHeader } from '@/components/card/ui/card'
+import { Card, CardTitle, CardContent, CardHeader } from '@/components/card/ui/card'
 import { ProjectTabs } from '../../projects/components/ProjectTabs'
 
 type TaskListProps = {
@@ -30,9 +30,12 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
 
   return (
     <Card className="h-full min-h-0 flex flex-col">
-      <CardHeader className="text-heading font-bold">Tasks</CardHeader>
-
-      <ProjectTabs />
+      <CardHeader className="text-heading font-bold">
+        <CardTitle>Tasks</CardTitle>
+        <div className="ml-auto">
+          <ProjectTabs />
+        </div>
+      </CardHeader>
 
       <CardContent className="flex-1 min-h-0  gap-2 overflow-y-auto">
         {incomplete.length === 0 ? (

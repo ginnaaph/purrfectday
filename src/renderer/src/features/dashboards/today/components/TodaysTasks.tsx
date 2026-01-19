@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '@/libs/QueryClient'
 import { updateTaskProgress } from '@/features/productivity/tasks/api/updateTaskProgress'
 import { useCoinsStore } from '@/features/shop/coins/store/useCoinStore'
-import { Card, CardContent, CardHeader } from '@/components/card/ui/card'
+import { Card, CardTitle, CardContent, CardHeader } from '@/components/card/ui/card'
 import { Skeleton } from '@/components/side-bar/components/ui/skeleton'
 import { Checkbox } from '@/components/checkbox/ui/checkbox'
 import { Button } from '@/components/side-bar/components/ui/button'
@@ -78,7 +78,7 @@ export const TodaysTaskCard = ({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <h2 className="text-heading text-center">Today</h2>
+          <CardTitle>Today&apos;s Tasks</CardTitle>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
@@ -148,7 +148,7 @@ export const TodaysTaskCard = ({
             })()}
 
             <section aria-label="Other Tasks" className="gap-3 flex flex-col">
-              <div className="text-xl font-bold mb-2 pt-3 overflow-y-auto">To do</div>
+              <div className="text-xl font-bold pt-2 overflow-y-auto">To do</div>
               <ul className="gap-2 flex flex-col p-1">
                 {(() => {
                   const isToday = (d?: Date | null) => {
@@ -167,7 +167,7 @@ export const TodaysTaskCard = ({
                   return tasks
                     .filter((t) => !highTodayIds.has(t.id))
                     .map((task) => (
-                      <li key={task.id} className="flex items-center gap-3 p-2 rounded-lg">
+                      <li key={task.id} className="flex items-center gap-2 p-2 rounded-lg">
                         <Checkbox
                           checked={task.isComplete}
                           disabled={toggleCompleteMutation.isPending}

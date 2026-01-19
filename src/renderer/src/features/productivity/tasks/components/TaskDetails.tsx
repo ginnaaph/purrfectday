@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useTaskDetailData } from '../hooks/useTaskDetailData'
 import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -11,6 +12,8 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { ChevronDownIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ProjectComboBox } from '@/features/productivity/projects/components/ProjectComboBox'
+import { getAllProjects } from '@/features/productivity/projects/api/getAllProjects.api'
 import {
   Dialog,
   DialogContent,
@@ -25,10 +28,30 @@ const schema = z.object({
   priority: z.enum(['low', 'medium', 'high']).optional(),
   tags: z.string().optional(),
   estimatedPomodoros: z.number().nullable().optional(),
+  project: z
+    .object({
+      label: z.string(),
+      value: z.number()
+    })
+    .nullable()
+    .optional(),
   dueDate: z.string().optional(),
   dueTime: z.string().optional()
 })
 type TaskDetailsFormInput = z.infer<typeof schema>
+
+const formatLocalDateInput = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const parseLocalDateInput = (value: string) => {
+  const [year, month, day] = value.split('-').map(Number)
+  if (!year || !month || !day) return null
+  return new Date(year, month - 1, day)
+}
 
 export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   const isOpen = useTaskModalStore((s) => s.isOpen)
@@ -37,6 +60,11 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   const close = useTaskModalStore((s) => s.close)
 
   const { task, updateTaskMutation } = useTaskDetailData(taskId)
+  const { data: projects } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getAllProjects,
+    staleTime: 1000 * 60 * 5
+  })
 
   const [dateOpen, setDateOpen] = useState(false)
   const timeTouchedRef = useRef(false)
@@ -49,6 +77,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
       priority: undefined,
       tags: '',
       estimatedPomodoros: null,
+      project: null,
       dueDate: '',
       dueTime: ''
     }
@@ -65,7 +94,8 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
       tags: (task?.tags ?? []).join(', '),
       estimatedPomodoros:
         typeof task?.estimatedPomodoros === 'number' ? task.estimatedPomodoros : null,
-      dueDate: task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : '',
+      project: task?.project_id ? { label: '', value: task.project_id } : null,
+      dueDate: task?.dueDate ? formatLocalDateInput(new Date(task.dueDate)) : '',
       dueTime: ''
     }
 
@@ -93,7 +123,8 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     // Combine local date + time into a Date
     let combinedDue: Date | null = null
     if (values.dueDate) {
-      const d = new Date(values.dueDate)
+      const d = parseLocalDateInput(values.dueDate)
+      if (!d) return
 
       const timeToApply = timeTouchedRef.current ? values.dueTime : ''
 
@@ -113,6 +144,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
       tags: values.tags ?? '',
       estimated_pomodoros:
         typeof values.estimatedPomodoros === 'number' ? values.estimatedPomodoros : null,
+      project_id: values.project?.value ?? null,
       dueDate: combinedDue
     }
 
@@ -139,7 +171,10 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   }
 
   const dueDateStr = form.getValues('dueDate')
-  const selectedDate = dueDateStr ? new Date(dueDateStr) : undefined
+  const selectedDate = dueDateStr ? parseLocalDateInput(dueDateStr) ?? undefined : undefined
+  const selectedProjectName = task?.project_id
+    ? projects?.find((project) => project.id === task.project_id)?.name
+    : null
 
   return (
     <Dialog
@@ -213,6 +248,24 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
             <FormMessage>{form.formState.errors.description?.message}</FormMessage>
           </FormItem>
 
+          {/* Project */}
+          <FormItem>
+            <FormLabel className="text-md " htmlFor="project">
+              Project
+            </FormLabel>
+            <FormControl>
+              {isEditing ? (
+                <ProjectComboBox control={form.control} name="project" />
+              ) : (
+                <div className="border border-transparent h-9 px-3 py-2 rounded-md text-sm leading-5 text-primary-alt bg-secondary-background/50 flex items-center">
+                  {selectedProjectName ?? (
+                    <span className="text-muted-foreground">No project</span>
+                  )}
+                </div>
+              )}
+            </FormControl>
+          </FormItem>
+
           {/* Due Date / Time / Clear */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
             <FormItem>
@@ -239,8 +292,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
                         captionLayout="dropdown"
                         onSelect={(d) => {
                           if (d) {
-                            const iso = new Date(d).toISOString().slice(0, 10)
-                            form.setValue('dueDate', iso)
+                            form.setValue('dueDate', formatLocalDateInput(d))
                           } else {
                             form.setValue('dueDate', '')
                           }
