@@ -44,18 +44,18 @@ export const ProjectTabs = () => {
 
   return (
     <>
-      <div className="flex gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-xl px-1 scrollbar-hide">
+      <div className="flex flex-nowrap gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-full min-w-0 px-1">
         <button
           onClick={() => setShowModal(true)}
-          className="px-4 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition"
+          className="px-4 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition shrink-0"
         >
           + New Project
         </button>
         {projects.map((project) => (
-          <span key={project.id} style={{ position: 'relative' }}>
+          <span key={project.id} className="relative shrink-0">
             {editingProjectId === project.id ? (
               <input
-                className="px-2 py-1 rounded-lg border  text-sm"
+                className="px-2 py-1 rounded-lg border text-sm shrink-0"
                 value={editName}
                 autoFocus
                 onChange={(e) => setEditName(e.target.value)}
@@ -92,7 +92,7 @@ export const ProjectTabs = () => {
                   project.id === activeProjectId
                     ? 'bg-secondary-background font-semibold rounded-lg'
                     : 'bg-white hover:bg-primary-alt/50'
-                }`}
+                } shrink-0`}
               >
                 {project.name}
               </button>

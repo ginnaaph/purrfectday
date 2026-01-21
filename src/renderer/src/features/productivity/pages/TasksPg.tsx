@@ -26,7 +26,7 @@ export const TasksPg = () => {
     <TaskDashboardLayout
       taskList={
         <>
-          <div className="flex-1 flex flex-col overflow-y-auto px-2 bg-white/60 rounded-xl">
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden px-2 bg-white/60 rounded-xl">
             <TaskList tasks={filteredTasks} />
           </div>
         </>

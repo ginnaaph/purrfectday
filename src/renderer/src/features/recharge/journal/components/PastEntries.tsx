@@ -9,12 +9,12 @@ interface PastEntriesProps {
 
 export const PastEntries = ({ entries }: PastEntriesProps) => {
   return (
-    <Card>
-      <CardHeader> Past Entries </CardHeader>
+    <Card className="bg-background">
+      <CardHeader className="bg-secondary-alt rounded-lg"> Past Entries </CardHeader>
       <CardContent>
         {entries.map((entry) => (
           <div key={entry.id} className="mb-4 last:mb-0">
-            <div className="flex items-center mb-2 text-sm text-secondary">
+            <div className="flex items-center mb-2 text-sm text-primary">
               <BookOpen className="size-4 mr-2" />
               <span> {getFormattedDateFromDate(new Date(entry.entry_date || ''))}</span>
             </div>
