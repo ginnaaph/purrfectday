@@ -208,102 +208,106 @@ export function Availability({
         )}
         ref={containerRef}
       >
-        {/* Header */}
-        <div
-          className="sticky top-0 z-10 grid w-full border-b border-primary-alt/15 bg-secondary-background"
-          style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))` }}
-        >
-          <div className="border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
-            {/* Time label column header */}
-          </div>
-          {days.map((dayIndex, i) => {
-            const dayDate = new Date(weekStart)
-            dayDate.setDate(weekStart.getDate() + i)
-            return (
-              <div
-                key={dayIndex}
-                className="border-r border-primary-alt/15 px-2 py-2 text-center text-md font-bold text-primary-alt last:border-r-0"
-              >
-                <div className="leading-tight">{DAYS[dayIndex]}</div>
-                <div className="text-xs font-medium text-primary-alt/80">
-                  {dayDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                </div>
+        <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden">
+          <div className="min-w-max">
+            {/* Header */}
+            <div
+              className="sticky top-0 z-10 grid w-full min-w-max border-b border-primary-alt/15 bg-secondary-background"
+              style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))` }}
+            >
+              <div className="border-r border-primary-alt/15 p-2 text-sm font-bold text-primary-alt">
+                {/* Time label column header */}
               </div>
-            )
-          })}
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div
-            className="grid"
-            style={{
-              gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))`,
-              height: `${bodyHeight}px`
-            }}
-          >
-            {/* Time Labels */}
-            <div className="border-r border-primary-alt/15 bg-primary-background">
-              <div className="relative h-full w-full">
-                {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
-                  // Render time labels every hour
-                  const hour = startTime + i
-                  const top = ((hour * 60 - startOffset) / totalMinutes) * 100
-                  if (top > 99) return null // Don't render last label at very bottom if it overlaps
-                  return (
-                    <div
-                      key={hour}
-                      className={cn(
-                        'absolute right-2 text-xs text-primary-alt',
-                        i === 0 ? 'translate-y-0' : '-translate-y-1/2'
-                      )}
-                      style={{ top: `${top}%` }}
-                    >
-                      {formatDisplayTime(`${hour}:00`, useAmPm)}
+              {days.map((dayIndex, i) => {
+                const dayDate = new Date(weekStart)
+                dayDate.setDate(weekStart.getDate() + i)
+                return (
+                  <div
+                    key={dayIndex}
+                    className="border-r border-primary-alt/15 px-2 py-2 text-center text-md font-bold text-primary-alt last:border-r-0"
+                  >
+                    <div className="leading-tight">{DAYS[dayIndex]}</div>
+                    <div className="text-xs font-medium text-primary-alt/80">
+                      {dayDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </div>
-                  )
-                })}
-              </div>
+                  </div>
+                )
+              })}
             </div>
 
-            {/* Days Grid Container - shared scroll with time labels */}
-            <div className="relative" style={{ gridColumn: `2 / span ${days.length}` }}>
+            {/* Body */}
+            <div className="flex-1 min-h-0 overflow-y-auto">
               <div
-                className="grid h-full"
-                style={{ gridTemplateColumns: `repeat(${days.length}, minmax(100px, 1fr))` }}
-                ref={gridRef}
+                className="grid min-w-max"
+                style={{
+                  gridTemplateColumns: `64px repeat(${days.length}, minmax(100px, 1fr))`,
+                  height: `${bodyHeight}px`
+                }}
               >
-                {/* Background Grid Lines */}
-                <div
-                  className="absolute inset-0 pointer-events-none flex flex-col"
-                  style={{ gridColumn: `1 / span ${days.length}` }}
-                >
-                  {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map(
-                    (_, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 border-b border-primary-alt/15 border-dashed w-full"
-                      />
-                    )
-                  )}
+                {/* Time Labels */}
+                <div className="border-r border-primary-alt/15 bg-primary-background">
+                  <div className="relative h-full w-full">
+                    {Array.from({ length: endTime - startTime + 1 }).map((_, i) => {
+                      // Render time labels every hour
+                      const hour = startTime + i
+                      const top = ((hour * 60 - startOffset) / totalMinutes) * 100
+                      if (top > 99) return null // Don't render last label at very bottom if it overlaps
+                      return (
+                        <div
+                          key={hour}
+                          className={cn(
+                            'absolute right-2 text-xs text-primary-alt',
+                            i === 0 ? 'translate-y-0' : '-translate-y-1/2'
+                          )}
+                          style={{ top: `${top}%` }}
+                        >
+                          {formatDisplayTime(`${hour}:00`, useAmPm)}
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
 
-                {days.map((dayIndex, i) => (
-                  <DayColumn
-                    key={dayIndex}
-                    id={`day-${i}`}
-                    colIndex={i}
-                    startTime={startTime}
-                    endTime={endTime}
-                    timeIncrements={timeIncrements}
-                    events={internalValue.filter((e) => e.week_day === dayIndex)}
-                    onCreate={handleCreate}
-                    onResize={handleResize}
-                    onDelete={handleDelete}
-                    useAmPm={useAmPm}
-                    isOverlay={false}
-                  />
-                ))}
+                {/* Days Grid Container - shared scroll with time labels */}
+                <div className="relative" style={{ gridColumn: `2 / span ${days.length}` }}>
+                  <div
+                    className="grid h-full"
+                    style={{ gridTemplateColumns: `repeat(${days.length}, minmax(100px, 1fr))` }}
+                    ref={gridRef}
+                  >
+                    {/* Background Grid Lines */}
+                    <div
+                      className="absolute inset-0 pointer-events-none flex flex-col"
+                      style={{ gridColumn: `1 / span ${days.length}` }}
+                    >
+                      {Array.from({ length: (endTime - startTime) * (60 / timeIncrements) }).map(
+                        (_, i) => (
+                          <div
+                            key={i}
+                            className="flex-1 border-b border-primary-alt/15 border-dashed w-full"
+                          />
+                        )
+                      )}
+                    </div>
+
+                    {days.map((dayIndex, i) => (
+                      <DayColumn
+                        key={dayIndex}
+                        id={`day-${i}`}
+                        colIndex={i}
+                        startTime={startTime}
+                        endTime={endTime}
+                        timeIncrements={timeIncrements}
+                        events={internalValue.filter((e) => e.week_day === dayIndex)}
+                        onCreate={handleCreate}
+                        onResize={handleResize}
+                        onDelete={handleDelete}
+                        useAmPm={useAmPm}
+                        isOverlay={false}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

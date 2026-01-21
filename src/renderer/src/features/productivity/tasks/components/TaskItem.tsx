@@ -99,7 +99,7 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
                 e.stopPropagation()
                 openTaskModal(task.id)
               }}
-              className={`text-left font-semibold hover:underline ${
+              className={`text-left font-semibold hover:underline text-sm ${
                 task.isComplete ? 'line-through text-red' : ''
               }`}
             >

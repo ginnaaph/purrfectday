@@ -63,8 +63,9 @@ describe('TaskDetails dialog', () => {
     expect(descInput.value).toBe('Draft the blog about cats')
 
     // Due date populated
-    const dateInput = screen.getByLabelText('Due Date') as HTMLInputElement
-    expect(dateInput.value).toBe('2026-01-10')
+    const dueDateButton = screen.getByRole('button', { name: /select date|\/|-/i })
+    const expectedDateLabel = new Date(2026, 0, 10).toLocaleDateString()
+    expect(dueDateButton).toHaveTextContent(expectedDateLabel)
 
     // Priority select populated
     const prioritySelect = screen.getByLabelText('Priority') as HTMLSelectElement

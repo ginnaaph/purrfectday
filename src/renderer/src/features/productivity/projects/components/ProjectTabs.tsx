@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { getAllProjects } from '../api/getAllProjects.api'
 import { insertProject } from '../api/insertProject.api'
 import { queryClient } from '@/libs/QueryClient'
+import { Button } from '@/components/ui/button'
 
 export const ProjectTabs = () => {
   const query = useQuery({
@@ -44,18 +45,20 @@ export const ProjectTabs = () => {
 
   return (
     <>
-      <div className="flex flex-nowrap gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-full min-w-0 px-1">
-        <button
+      <div className="flex flex-nowrap items-center gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-full min-w-0 px-1 justify-start">
+        <Button
           onClick={() => setShowModal(true)}
-          className="px-4 py-1 rounded-lg bg-secondary-background/50 text-sm text-center shadow-sm hover:bg-secondary-background/70 transition shrink-0"
+          size="sm"
+          variant="subtle"
+          className="shrink-0 h-6 px-3 text-xs"
         >
           + New Project
-        </button>
+        </Button>
         {projects.map((project) => (
           <span key={project.id} className="relative shrink-0">
             {editingProjectId === project.id ? (
               <input
-                className="px-2 py-1 rounded-lg border text-sm shrink-0"
+                className="h-6 w-24 rounded-md border border-input px-2 text-xs shadow-sm shrink-0"
                 value={editName}
                 autoFocus
                 onChange={(e) => setEditName(e.target.value)}
@@ -72,10 +75,9 @@ export const ProjectTabs = () => {
                     setEditingProjectId(null)
                   }
                 }}
-                style={{ width: 90 }}
               />
             ) : (
-              <button
+              <Button
                 onClick={() => {
                   if (project.id === activeProjectId) {
                     setActiveProjectId(null)
@@ -88,14 +90,12 @@ export const ProjectTabs = () => {
                   setContextMenu({ x: e.clientX, y: e.clientY, projectId: project.id })
                   setEditName(project.name)
                 }}
-                className={`px-4 py-1 rounded-lg shadow-sm transition text-sm ${
-                  project.id === activeProjectId
-                    ? 'bg-secondary-background font-semibold rounded-lg'
-                    : 'bg-white hover:bg-primary-alt/50'
-                } shrink-0`}
+                size="sm"
+                variant={project.id === activeProjectId ? 'default' : 'subtle'}
+                className={`shrink-0 h-6 px-3 text-xs ${project.id === activeProjectId ? 'font-semibold' : ''}`}
               >
                 {project.name}
-              </button>
+              </Button>
             )}
           </span>
         ))}
