@@ -33,9 +33,9 @@ export const PomodoroPg = () => {
     }
   }, [focusFromTaskList, clearFocusedTask, setFocusedTaskId])
   return (
-    <div className="flex flex-col justify-center items-center overflow-x-hidden gap-4 p-10 pt-50">
-      <div className="flex flex-col items-center space-y-4  ">
-        <div className="gap-2 flex flex-row">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden gap-4 py-6 px-6">
+      <div className="flex flex-col items-center space-y-6  ">
+        <div className="gap-2 flex flex-row mb-3">
           <ToggleModeBttn
             currentMode={mode}
             onToggle={() => setMode(mode === 'pomodoro' ? 'stopwatch' : 'pomodoro')}

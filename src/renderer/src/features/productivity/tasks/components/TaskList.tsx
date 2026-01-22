@@ -62,7 +62,7 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
           </div>
         ) : (
           <>
-            <ul className="space-y-5 gap-4 not-visited:ml-1 mt-0">
+            <ul className="space-y-2 gap-2 not-visited:ml-1 mt-0 flex flex-col">
               {incomplete.map((task) => (
                 <TaskItem key={task.id} task={task} onCoinEarned={onCoinEarned} />
               ))}

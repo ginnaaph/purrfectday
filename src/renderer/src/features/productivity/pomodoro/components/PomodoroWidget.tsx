@@ -28,7 +28,9 @@ export const PomodoroWidget = () => {
         <TimerSettingsButton onClick={() => setShowSettings(true)} />
       </CardContent>
 
-      {mode === 'pomodoro' ? <PomodoroMode /> : <StopwatchMode />}
+      <div className="mt-4">
+        {mode === 'pomodoro' ? <PomodoroMode /> : <StopwatchMode />}
+      </div>
       <TimerSettingsModal
         isVisible={showSettings}
         onClose={() => setShowSettings(false)}

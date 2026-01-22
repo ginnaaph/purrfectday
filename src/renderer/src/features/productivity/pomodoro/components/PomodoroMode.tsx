@@ -39,15 +39,25 @@ const PomodoroMode = ({ onSwitchToStopwatch }: PomodoroModeProps) => {
   }, [activeTaskId])
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      {/* Focused Task Display or Selector */}
-      {phase === 'pomodoro' ? !activeTask ? <TaskSelect /> : <FocusPanel /> : <h2>Break time!</h2>}
+    <div className="flex flex-col items-center gap-6 mb-6">
+      <div className="flex mt-4 flex-col items-center">
+        {/* Focused Task Display or Selector */}
+        {phase === 'pomodoro' ? (
+          !activeTask ? (
+            <TaskSelect />
+          ) : (
+            <FocusPanel />
+          )
+        ) : (
+          <h2>Break time!</h2>
+        )}
 
-      {/* Timer */}
-      <DisplayTime seconds={timeLeft} />
+        {/* Timer */}
+        <DisplayTime seconds={timeLeft} />
+      </div>
 
       {/* Controls */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-3 mb-3">
         {!isRunning ? (
           <Button onClick={start} variant="default">
             Start

@@ -35,7 +35,7 @@ export const OverviewPg = () => {
     useOverviewStatsFromStore(range)
 
   return (
-    <div className="w-full h-full min-h-0 overflow-hidden flex flex-col p-4 gap-4">
+    <div className="w-full h-full min-h-0 overflow-x-hidden overflow-y-auto flex flex-col p-4 gap-4 lg:overflow-y-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-3xl font-bold text-primary-alt">Overview</div>
@@ -66,7 +66,7 @@ export const OverviewPg = () => {
         </div>
       </div>
 
-      <div className="grid min-h-0 gap-4 lg:grid-cols-[minmax(240px,320px)_minmax(0,1fr)] auto-rows-fr">
+      <div className="grid min-h-0 gap-4 lg:grid-cols-[minmax(240px,320px)_minmax(0,1fr)] auto-rows-min">
         <div className="flex flex-col gap-4 min-h-0">
           <Card className="bg-primary-background/70 flex flex-col">
             <CardHeader className="py-3">
@@ -126,7 +126,7 @@ export const OverviewPg = () => {
           <CardTitle className="text-lg">Stats</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 min-h-0 flex flex-col gap-3">
-          <div className="flex-1 min-h-0 rounded-xl border border-dashed border-primary-alt/20 bg-primary-background/60" />
+          <div className="flex-1  rounded-xl border border-dashed border-primary-alt/20 bg-primary-background md:min-h-65" />
           <div className="flex items-center gap-4 text-xs text-primary-alt/70">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-2 w-2 rounded-full bg-primary-alt/60" />

@@ -75,7 +75,7 @@ export const TodaysTaskCard = ({
     }
   })
   return (
-    <Card>
+    <Card className="pt-5">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Today&apos;s Tasks</CardTitle>

@@ -12,10 +12,10 @@ const FocusPanel = () => {
   if (!activeTask) return <TaskSelect />
 
   return (
-    <div className="text-center mt-2 text-[#6a5555] bg-[#fef6e4] px-2 py-2  gap-2 rounded shadow-sm">
-      <p className="text-md uppercase opacity-70 tracking-wider">Focusing on</p>
-      <h2 className="text-xl font-semibold">{activeTask.title}</h2>
-      <p className="text-sm">
+    <div className="text-center mt-10 text-white flex flex-col bg-secondary-background/60 p-6  px-10 gap-3 rounded shadow-sm justify-center ">
+      <p className="text-md uppercase opacity-70 tracking-wider text-text-secondary">Focusing on</p>
+      <h2 className="text-xl font-semibold text-cool-accent">{activeTask.title}</h2>
+      <p className="text-sm text-text-secondary mb-4 mt-4">
         ⏱ {activeTask.pomodorosCompleted || 0} / {activeTask.estimatedPomodoros || 1} Pomodoros
       </p>
       <Button onClick={() => setActiveTaskId(null)} variant="outline" size="sm">

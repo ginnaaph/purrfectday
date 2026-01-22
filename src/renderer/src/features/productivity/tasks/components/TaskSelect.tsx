@@ -19,10 +19,10 @@ const TaskSelect = () => {
   }
 
   return (
-    <div className="mt-2 text-center gap-3">
+    <div className="mt-5 text-center gap-3">
       <label className="block font-bold text-[#6a5555] mb-1  text-lg py-2">Select a task</label>
       <select
-        className="bg-secondary-background rounded px-2 py-1 text-sm text-center"
+        className="bg-secondary-background rounded px-2 py-1 text-sm text-center mt-3"
         onChange={handleSelect}
         defaultValue=""
       >

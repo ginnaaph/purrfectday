@@ -1,5 +1,6 @@
 export type Task = {
   id: number
+  type?: string
   title: string
   description?: string
   dueDate?: Date | null
@@ -11,6 +12,8 @@ export type Task = {
   completedAt?: Date | null
   tags?: string[]
   earnedCoins?: number
+  schedule_days?: string[]
+  time_of_day?: string[]
 }
 
 export interface TaskApiUpdateInput {

@@ -6,11 +6,11 @@ export const PetDashboardCard = () => {
   const navigate = useNavigate()
   return (
     <div
-      className="relative flex flex-col items-center justify-center rounded-2xl shadow p-4 h-90 w-full"
+      className="relative flex flex-col items-center justify-end rounded-2xl shadow p-4 h-90 w-full overflow-hidden"
       style={{
         backgroundImage: `url(${HomeBg})`,
         backgroundSize: 'contain',
-        backgroundPosition: 'center 50%',
+        backgroundPosition: 'center bottom',
         backgroundRepeat: 'no-repeat'
       }}
     >
@@ -21,7 +21,7 @@ export const PetDashboardCard = () => {
       >
         <PlayCircle className="w-4 h-4" />
       </button>
-      <div className="flex flex-col items-center justify-center z-10">
+      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-2 z-10">
         <img
           src={SittingCat}
           alt="Your Cat"
