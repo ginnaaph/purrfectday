@@ -1,6 +1,6 @@
 export type Task = {
   id: number
-  type?: string
+  type?: 'task' | 'habit' | null
   title: string
   description?: string
   dueDate?: Date | null
@@ -12,13 +12,14 @@ export type Task = {
   completedAt?: Date | null
   tags?: string[]
   earnedCoins?: number
-  schedule_days?: string[]
-  time_of_day?: string[]
+  scheduleDays?: number[] | null
+  timeOfDay?: 'morning' | 'afternoon' | 'night' | null
 }
 
 export interface TaskApiUpdateInput {
   title?: string
   description?: string
+  type?: 'task' | 'habit' | null
   dueDate?: Date | null
   priority?: 'high' | 'medium' | 'low' | null
   tags?: string // API expects comma-separated string from the form

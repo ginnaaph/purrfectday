@@ -25,6 +25,7 @@ import {
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
+  type: z.enum(['task', 'habit']).optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   tags: z.string().optional(),
   estimatedPomodoros: z.number().nullable().optional(),
@@ -74,6 +75,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     defaultValues: {
       title: '',
       description: '',
+      type: 'task',
       priority: undefined,
       tags: '',
       estimatedPomodoros: null,
@@ -90,6 +92,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     const values: TaskDetailsFormInput = {
       title: task?.title ?? '',
       description: task?.description ?? '',
+      type: (task?.type as TaskDetailsFormInput['type']) ?? 'task',
       priority: (task?.priority as TaskDetailsFormInput['priority']) ?? undefined,
       tags: (task?.tags ?? []).join(', '),
       estimatedPomodoros:
@@ -140,6 +143,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
     const updates = {
       title: values.title,
       description: values.description ?? undefined,
+      type: values.type ?? 'task',
       priority: values.priority ?? null,
       tags: values.tags ?? '',
       estimated_pomodoros:
@@ -171,7 +175,7 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
   }
 
   const dueDateStr = form.getValues('dueDate')
-  const selectedDate = dueDateStr ? parseLocalDateInput(dueDateStr) ?? undefined : undefined
+  const selectedDate = dueDateStr ? (parseLocalDateInput(dueDateStr) ?? undefined) : undefined
   const selectedProjectName = task?.project_id
     ? projects?.find((project) => project.id === task.project_id)?.name
     : null
@@ -258,12 +262,34 @@ export const TaskDetails = ({ taskId }: { taskId: number | null }) => {
                 <ProjectComboBox control={form.control} name="project" />
               ) : (
                 <div className="border border-transparent h-9 px-3 py-2 rounded-md text-sm leading-5 text-primary-alt bg-secondary-background/50 flex items-center">
-                  {selectedProjectName ?? (
-                    <span className="text-muted-foreground">No project</span>
-                  )}
+                  {selectedProjectName ?? <span className="text-muted-foreground">No project</span>}
                 </div>
               )}
             </FormControl>
+          </FormItem>
+
+          {/* Type */}
+          <FormItem>
+            <FormLabel className="text-md " htmlFor="type">
+              Type
+            </FormLabel>
+            <FormControl>
+              {isEditing ? (
+                <select
+                  id="type"
+                  className="border-input h-9 w-full rounded-md border px-3 py-1 text-sm outline-none"
+                  {...form.register('type')}
+                >
+                  <option value="task">Task</option>
+                  <option value="habit">Habit</option>
+                </select>
+              ) : (
+                <div className="border border-transparent h-9 px-3 py-2 rounded-md text-sm leading-5 text-primary-alt bg-secondary-background/50 flex items-center">
+                  {form.getValues('type') === 'habit' ? 'Habit' : 'Task'}
+                </div>
+              )}
+            </FormControl>
+            <FormMessage>{form.formState.errors.type?.toString()}</FormMessage>
           </FormItem>
 
           {/* Due Date / Time / Clear */}

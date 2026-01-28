@@ -8,5 +8,4 @@ export interface TaskApiUpdateInput {
   is_complete: boolean
   completed_at?: Date | null
   estimated_pomodoros?: number | null
-  earnedCoins?: number | null
 }

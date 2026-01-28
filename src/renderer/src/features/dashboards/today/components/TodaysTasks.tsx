@@ -5,9 +5,10 @@ import { useCoinsStore } from '@/features/shop/coins/store/useCoinStore'
 import { Card, CardTitle, CardContent, CardHeader } from '@/components/card/ui/card'
 import { Skeleton } from '@/components/side-bar/components/ui/skeleton'
 import { Checkbox } from '@/components/checkbox/ui/checkbox'
-import { Button } from '@/components/side-bar/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { AddTask } from '@/features/productivity/tasks/components/AddTask'
 import { Dialog, DialogTrigger, DialogContent } from '@/components/dialog/ui/dialog'
+import { parseDateOnly, toDateOnlyString } from '@/utils/dates-time/dateHelperFn'
 
 type TodaysTask = {
   id: number
@@ -17,6 +18,7 @@ type TodaysTask = {
   earnedCoins?: number
   priority?: 'low' | 'medium' | 'high' | null
   dueDate?: Date | null
+  type?: 'habit' | 'task' | null
 }
 
 type TodaysTaskCardProps = {
@@ -27,6 +29,7 @@ type TodaysTaskCardProps = {
     completedAt?: Date | null
     priority?: 'low' | 'medium' | 'high' | null
     dueDate?: Date | null
+    type?: 'habit' | 'task' | null
   }[]
   onCoinsEarned?: (amount: number) => void
   coinsPerTask?: number
@@ -106,17 +109,21 @@ export const TodaysTaskCard = ({
         ) : (
           <div className="space-y-6">
             {(() => {
-              // Helper to check if a task is due today (ignores time)
-              const isToday = (d?: Date | null) => {
+              // Show tasks due today only (exclude habits)
+              const isDueToday = (d?: Date | string | null) => {
                 if (!d) return false
-                const today = new Date()
-                today.setHours(0, 0, 0, 0)
-                const dd = new Date(d)
-                dd.setHours(0, 0, 0, 0)
-                return dd.getTime() === today.getTime()
+                const todayKey = toDateOnlyString(new Date())
+                const dueKey =
+                  d instanceof Date
+                    ? toDateOnlyString(d)
+                    : typeof d === 'string'
+                      ? toDateOnlyString(parseDateOnly(d) ?? new Date(d))
+                      : null
+                return dueKey === todayKey
               }
 
-              const highToday = tasks.filter((t) => t.priority === 'high' && isToday(t.dueDate))
+              const dueToday = tasks.filter((t) => t.type !== 'habit' && isDueToday(t.dueDate))
+              const highToday = dueToday.filter((t) => t.priority === 'high')
 
               return highToday.length > 0 ? (
                 <section aria-label="High Priority Tasks" className="gap-3 flex flex-col">
@@ -151,20 +158,22 @@ export const TodaysTaskCard = ({
               <div className="text-xl font-bold pt-2 overflow-y-auto">To do</div>
               <ul className="gap-2 flex flex-col p-1">
                 {(() => {
-                  const isToday = (d?: Date | null) => {
+                  const isDueToday = (d?: Date | string | null) => {
                     if (!d) return false
-                    const today = new Date()
-                    today.setHours(0, 0, 0, 0)
-                    const dd = new Date(d)
-                    dd.setHours(0, 0, 0, 0)
-                    return dd.getTime() === today.getTime()
+                    const todayKey = toDateOnlyString(new Date())
+                    const dueKey =
+                      d instanceof Date
+                        ? toDateOnlyString(d)
+                        : typeof d === 'string'
+                          ? toDateOnlyString(parseDateOnly(d) ?? new Date(d))
+                          : null
+                    return dueKey === todayKey
                   }
+                  const dueToday = tasks.filter((t) => t.type !== 'habit' && isDueToday(t.dueDate))
                   const highTodayIds = new Set(
-                    tasks
-                      .filter((t) => t.priority === 'high' && isToday(t.dueDate))
-                      .map((t) => t.id)
+                    dueToday.filter((t) => t.priority === 'high').map((t) => t.id)
                   )
-                  return tasks
+                  return dueToday
                     .filter((t) => !highTodayIds.has(t.id))
                     .map((task) => (
                       <li key={task.id} className="flex items-center gap-2 p-2 rounded-lg">

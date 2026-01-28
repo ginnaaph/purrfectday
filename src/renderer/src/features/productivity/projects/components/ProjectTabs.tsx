@@ -45,17 +45,12 @@ export const ProjectTabs = () => {
 
   return (
     <>
-      <div className="flex flex-nowrap items-center gap-1 py-1 overflow-x-auto whitespace-nowrap scroll-smooth w-full max-w-full min-w-0 px-1 justify-start">
-        <Button
-          onClick={() => setShowModal(true)}
-          size="sm"
-          variant="subtle"
-          className="shrink-0 h-6 px-3 text-xs"
-        >
+      <div className="flex flex-row items-center gap-1 p-2 whitespace-nowrap  overflow-x-auto scroll-smooth w-full max-w-full min-w-0 justify-start">
+        <Button onClick={() => setShowModal(true)} size="sm">
           + New Project
         </Button>
         {projects.map((project) => (
-          <span key={project.id} className="relative shrink-0">
+          <span key={project.id} className="relative flex">
             {editingProjectId === project.id ? (
               <input
                 className="h-6 w-24 rounded-md border border-input px-2 text-xs shadow-sm shrink-0"
@@ -92,7 +87,7 @@ export const ProjectTabs = () => {
                 }}
                 size="sm"
                 variant={project.id === activeProjectId ? 'default' : 'subtle'}
-                className={`shrink-0 h-6 px-3 text-xs ${project.id === activeProjectId ? 'font-semibold' : ''}`}
+                className={` ${project.id === activeProjectId ? 'font-semibold' : ''}`}
               >
                 {project.name}
               </Button>
@@ -118,7 +113,7 @@ export const ProjectTabs = () => {
           }}
           onMouseLeave={() => setContextMenu(null)}
         >
-          <button
+          <Button
             className="block w-full text-left px-4 py-2 hover:bg-[#f5ebe0]"
             onClick={() => {
               setEditingProjectId(contextMenu.projectId)
@@ -126,8 +121,8 @@ export const ProjectTabs = () => {
             }}
           >
             Edit Name
-          </button>
-          <button
+          </Button>
+          <Button
             className="block w-full text-left px-4 py-2 hover:bg-red-100"
             onClick={() => {
               if (contextMenu.projectId) {
@@ -142,7 +137,7 @@ export const ProjectTabs = () => {
             }}
           >
             Delete Project
-          </button>
+          </Button>
         </div>
       )}
 

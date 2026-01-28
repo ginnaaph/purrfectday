@@ -3,11 +3,11 @@ import { supabase } from '@/libs/supabaseClient'
 export async function updateTaskProgress(
   taskId: number,
   updates: {
-    earnedCoins?: number
     dueDate?: Date | null
     isComplete?: boolean
     completedAt?: Date | null
     pomodorosCompleted?: number
+    earnedCoins?: number
   }
 ) {
   const payload = Object.fromEntries(

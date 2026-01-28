@@ -29,15 +29,13 @@ export const TaskList = ({ tasks, onCoinEarned }: TaskListProps) => {
   }, [tasks])
 
   return (
-    <Card className="h-full min-h-0 flex flex-col">
-      <CardHeader className="text-heading font-bold">
+    <Card className="h-full min-h-0 flex flex-col p-2">
+      <CardHeader className="text-heading text-center font-bold p-1">
         <CardTitle>Tasks</CardTitle>
-        <div className="ml-auto">
-          <ProjectTabs />
-        </div>
       </CardHeader>
+      <ProjectTabs />
 
-      <CardContent className="flex-1 min-h-0  gap-2 overflow-y-auto">
+      <CardContent className="flex-1 min-h-0  gap-2 overflow-y-auto p-2">
         {incomplete.length === 0 ? (
           <div className="py-2 items-center flex flex-col justify-center">
             <img src={sleepingcat} alt="No tasks" className="w-40 h-auto mb-4" />

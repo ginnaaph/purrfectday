@@ -40,13 +40,11 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
       if (nextChecked === task.isComplete) return
 
       if (nextChecked) {
-        const nextEarned = (task.earnedCoins ?? 0) + COINS_PER_TASK_COMPLETE
         const now = new Date()
 
         const { error } = await updateTaskProgress(task.id, {
           isComplete: true,
           completedAt: now,
-          earnedCoins: nextEarned
         })
         if (error) throw error
 
@@ -57,7 +55,6 @@ export const TaskItem = ({ task, onCoinEarned }: TaskItemProps) => {
         const { error } = await updateTaskProgress(task.id, {
           isComplete: false,
           completedAt: null,
-          earnedCoins: 0 // remove this line if you want to keep historical earnedCoins
         })
         if (error) throw error
       }

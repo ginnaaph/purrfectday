@@ -18,6 +18,7 @@ import { ChevronDownIcon } from 'lucide-react'
 import { ProjectComboBox } from '@/features/productivity/projects/components/ProjectComboBox'
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
+  type: z.enum(['task', 'habit']).optional(),
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   tags: z.string().optional(),
@@ -70,14 +71,16 @@ export const AddTask = () => {
       if (dueTime) {
         const [h, m = '0', s = '0'] = dueTime.split(':')
         d.setHours(Number(h || 0), Number(m || 0), Number(s || 0), 0)
+        combinedDue = d
       } else {
         d.setHours(0, 0, 0, 0)
+        combinedDue = d
       }
-      combinedDue = d
     }
 
     const taskToSave: Partial<Task> = {
       title: data.title,
+      type: data.type ?? 'task',
       description: data.description,
       priority: data.priority ?? null,
       tags: rawTags,
@@ -111,6 +114,21 @@ export const AddTask = () => {
             <FormControl>
               <Input id="title" placeholder="Task title" {...register('title')} />
               <FormMessage>{errors.title?.message}</FormMessage>
+            </FormControl>
+          </FormItem>
+          <FormItem>
+            <FormLabel className="text-md pb-2" htmlFor="type">
+              Type
+            </FormLabel>
+            <FormControl>
+              <select
+                id="type"
+                className="h-9 rounded-md border px-3 text-sm"
+                {...register('type')}
+              >
+                <option value="task">Task</option>
+                <option value="habit">Habit</option>
+              </select>
             </FormControl>
           </FormItem>
 

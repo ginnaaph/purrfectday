@@ -1,11 +1,11 @@
 import { Header } from '../components/Header'
 import { TodaysTaskCard } from '../today/components/TodaysTasks'
 import { DailyProgressCard } from '../today/components/DailyProgressCard'
-import { HabitTrackerCard } from '../today/components/HabitTrackerCard'
+import { HabitTrackerCard } from '@/features/recharge/habits/components/HabitTrackerCard'
 import { getAllTasks } from '@/features/productivity/tasks/api/getAllTasks'
 import { useQuery } from '@tanstack/react-query'
-import { getTodaysTaskList } from '../today/utils/isTaskForToday'
 import { PetDashboardCard } from '@/features/cat/components/PetDashboardCard'
+import { parseDateOnly, toDateOnlyString } from '@/utils/dates-time/dateHelperFn'
 // Skeleton handled within TodaysTaskCard
 export const TodayPg = () => {
   const query = useQuery({
@@ -13,7 +13,18 @@ export const TodayPg = () => {
     queryFn: getAllTasks
   })
   const tasks = query.data?.data ?? []
-  const todaysTasks = getTodaysTaskList(tasks)
+  const isDueToday = (d?: Date | string | null) => {
+    if (!d) return false
+    const todayKey = toDateOnlyString(new Date())
+    const dueKey =
+      d instanceof Date
+        ? toDateOnlyString(d)
+        : typeof d === 'string'
+          ? toDateOnlyString(parseDateOnly(d) ?? new Date(d))
+          : null
+    return dueKey === todayKey
+  }
+  const todaysTasks = tasks.filter((t) => t.type !== 'habit' && isDueToday(t.dueDate))
   const completedToday = todaysTasks.filter((task) => task.isComplete).length
   const totalTodayTask = todaysTasks.length
 
@@ -26,7 +37,7 @@ export const TodayPg = () => {
             <PetDashboardCard />
           </section>
           <section className="p-3 w-full shrink">
-            <HabitTrackerCard tasks={tasks} isLoading={query.isLoading} />
+            <HabitTrackerCard />
           </section>
         </div>
         <div className="flex flex-1 flex-col h-full gap-5 overflow-y-auto shrink">

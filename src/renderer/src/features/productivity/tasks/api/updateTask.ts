@@ -2,12 +2,13 @@
 import { supabase } from '@/libs/supabaseClient'
 import type { Task } from '@/features/productivity/tasks/types'
 import { TaskApiUpdateInput } from '@/features/productivity/tasks/types'
+import { parseDateOnly, toDateOnlyString } from '@/utils/dates-time/dateHelperFn'
 
 const mapTaskRecord = (record: any): Task => ({
   id: record.id,
   title: record.title,
   description: record.description,
-  dueDate: record.due_date ? new Date(record.due_date) : null,
+  dueDate: parseDateOnly(record.due_date),
   project_id: record.project_id ?? record.list_id ?? null,
   priority: record.priority ?? null,
   estimatedPomodoros: record.estimated_pomodoros ?? 0,
@@ -15,7 +16,10 @@ const mapTaskRecord = (record: any): Task => ({
   isComplete: record.is_complete ?? false,
   completedAt: record.completed_at ? new Date(record.completed_at) : null,
   tags: record.tags ?? [],
-  earnedCoins: record.earned_coins ?? 0
+  earnedCoins: record.earned_coins ?? 0,
+  type: record.type ?? null,
+  scheduleDays: record.schedule_days ?? null,
+  timeOfDay: record.time_of_day ?? null
 })
 
 export const updateTask = async (

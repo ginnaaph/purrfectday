@@ -1,17 +1,21 @@
 import { supabase } from '@/libs/supabaseClient'
 import { Task } from '@/features/productivity/tasks/types'
+import { toDateOnlyString } from '@/utils/dates-time/dateHelperFn'
 
 export const createTask = async (
   task: Partial<Task>
 ): Promise<{ data: Task[] | null; error: Error | null }> => {
   const payload: any = { ...task }
   if ('dueDate' in payload) {
-    payload.due_date = payload.dueDate
-      ? (payload.dueDate instanceof Date
-          ? payload.dueDate
-          : new Date(payload.dueDate)
-        ).toISOString()
-      : null
+    const raw = payload.dueDate
+    payload.due_date =
+      raw == null
+        ? null
+        : raw instanceof Date
+          ? toDateOnlyString(raw)
+          : typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(raw)
+            ? raw
+            : toDateOnlyString(new Date(raw))
     delete payload.dueDate
   }
   const { data, error } = await supabase.from('tasks').insert([payload])

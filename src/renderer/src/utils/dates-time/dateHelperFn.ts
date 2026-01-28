@@ -68,3 +68,23 @@ export function normalizeDueDate(dueDate: Date | null | undefined): Date | null 
   }
   return null
 }
+
+// Parses a date-only string (YYYY-MM-DD) as local midnight to avoid UTC day shifts.
+export function parseDateOnly(value: string | null | undefined): Date | null {
+  if (!value) return null
+  if (value.includes('T') || value.includes(' ')) {
+    const withTime = new Date(value)
+    return !isNaN(withTime.getTime()) ? withTime : null
+  }
+  const parts = value.split('-').map((part) => Number(part))
+  if (parts.length !== 3 || parts.some((part) => Number.isNaN(part))) return null
+  const [year, month, day] = parts
+  return new Date(year, month - 1, day)
+}
+
+export function toDateOnlyString(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
